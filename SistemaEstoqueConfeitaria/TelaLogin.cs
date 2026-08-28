@@ -7,7 +7,7 @@ namespace SistemaEstoqueConfeitaria
 {
     public partial class TelaLogin : Form
     {
-        // Controla se a senha está aparecendo
+        // Controla a exibição da senha
         private bool senhaVisivel = false;
 
         // Variáveis para mover a janela
@@ -19,27 +19,31 @@ namespace SistemaEstoqueConfeitaria
         {
             InitializeComponent();
 
-            // ========================================================
-            // EVENTOS
-            // ========================================================
+            ConfigurarEventos();
+        }
 
+        // ============================================================
+        // CONFIGURAÇÃO DOS EVENTOS
+        // ============================================================
+
+        private void ConfigurarEventos()
+        {
+            // Carregamento
             Load += TelaLogin_Load;
 
+            // Botões
             lblSair.Click += lblSair_Click;
-
             pbolhosenha.Click += pbolhosenha_Click;
-
             btnAcessar.Click += btnAcessar_Click;
-
             btnEsqueciSenha.Click += btnEsqueciSenha_Click;
 
-            // Efeitos do botão
+            // Efeitos do botão Acessar
             btnAcessar.MouseEnter += btnAcessar_MouseEnter;
             btnAcessar.MouseLeave += btnAcessar_MouseLeave;
             btnAcessar.MouseDown += btnAcessar_MouseDown;
             btnAcessar.MouseUp += btnAcessar_MouseUp;
 
-            // Mover janela pelo mouse
+            // Permitir mover a janela
             MouseDown += Janela_MouseDown;
             MouseMove += Janela_MouseMove;
             MouseUp += Janela_MouseUp;
@@ -52,12 +56,12 @@ namespace SistemaEstoqueConfeitaria
             lblLogin.MouseMove += Janela_MouseMove;
             lblLogin.MouseUp += Janela_MouseUp;
 
-            // Enter funciona como botão Acessar
+            // Enter = Acessar
             AcceptButton = btnAcessar;
         }
 
         // ============================================================
-        // CARREGAMENTO DA TELA
+        // CARREGAMENTO
         // ============================================================
 
         private void TelaLogin_Load(object? sender, EventArgs e)
@@ -113,7 +117,7 @@ namespace SistemaEstoqueConfeitaria
             {
                 if (senhaVisivel)
                 {
-                    // Senha aparecendo = olho fechado
+                    // Senha visível = olho fechado
                     pbolhosenha.Image =
                         Properties.Resources.ResourceManager.GetObject(
                             "olho_fechado"
@@ -130,7 +134,7 @@ namespace SistemaEstoqueConfeitaria
             }
             catch
             {
-                // Caso a imagem não seja encontrada,
+                // Caso o recurso da imagem não seja encontrado,
                 // o restante do sistema continua funcionando.
             }
         }
@@ -141,8 +145,9 @@ namespace SistemaEstoqueConfeitaria
 
         private void btnAcessar_Click(object? sender, EventArgs e)
         {
-            // Remove pontuação do CPF
-            string cpf = txtcpf.Text.Trim()
+            // Remove pontos, traço e espaços do CPF
+            string cpf = txtcpf.Text
+                .Trim()
                 .Replace(".", "")
                 .Replace("-", "")
                 .Replace(" ", "");
@@ -186,7 +191,7 @@ namespace SistemaEstoqueConfeitaria
             }
 
             // ========================================================
-            // CONECTAR AO MYSQL
+            // CONEXÃO COM MYSQL
             // ========================================================
 
             try
@@ -198,20 +203,28 @@ namespace SistemaEstoqueConfeitaria
                 con.Open();
 
                 // ====================================================
-                // CONSULTAR USUÁRIO
+                // CONSULTAR LOGIN
                 // ====================================================
 
                 string sql =
-                    "SELECT id, nome " +
+                    "SELECT id " +
                     "FROM login " +
-                    "WHERE cpf = @cpf AND senha = @senha " +
+                    "WHERE cpf = @cpf " +
+                    "AND senha = @senha " +
                     "LIMIT 1;";
 
                 using MySqlCommand cmd =
                     new MySqlCommand(sql, con);
 
-                cmd.Parameters.AddWithValue("@cpf", cpf);
-                cmd.Parameters.AddWithValue("@senha", senha);
+                cmd.Parameters.AddWithValue(
+                    "@cpf",
+                    cpf
+                );
+
+                cmd.Parameters.AddWithValue(
+                    "@senha",
+                    senha
+                );
 
                 using MySqlDataReader leitor =
                     cmd.ExecuteReader();
@@ -222,24 +235,12 @@ namespace SistemaEstoqueConfeitaria
 
                 if (leitor.Read())
                 {
-                    string nome =
-                        leitor["nome"]?.ToString() ?? "Usuário";
+                    MenuPrincipal menu =
+                        new MenuPrincipal();
 
-                    MessageBox.Show(
-                        "Bem-vindo(a), " + nome + "!",
-                        "Login realizado com sucesso",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                    menu.Show();
 
-                    // =================================================
-                    // QUANDO CRIARMOS O MENU PRINCIPAL,
-                    // VAMOS COLOCAR AQUI:
-                    //
-                    // MenuPrincipal menu = new MenuPrincipal();
-                    // menu.Show();
-                    // this.Hide();
-                    // =================================================
+                    this.Hide();
                 }
 
                 // ====================================================
@@ -262,7 +263,7 @@ namespace SistemaEstoqueConfeitaria
             }
 
             // ========================================================
-            // ERRO DE BANCO
+            // ERRO MYSQL
             // ========================================================
 
             catch (MySqlException ex)
@@ -299,7 +300,8 @@ namespace SistemaEstoqueConfeitaria
 
         private void btnEsqueciSenha_Click(object? sender, EventArgs e)
         {
-            
+            // Não faz nada por enquanto.
+            // Depois vamos abrir a tela de redefinição de senha.
         }
 
         // ============================================================
@@ -339,7 +341,7 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // MOVER JANELA
+        // MOVER A JANELA
         // ============================================================
 
         private void Janela_MouseDown(
