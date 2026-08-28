@@ -7,6 +7,7 @@ namespace SistemaEstoqueConfeitaria
     public partial class MenuPrincipal : Form
     {
         private bool arrastando = false;
+
         private Point posicaoMouseInicial;
         private Point posicaoFormInicial;
 
@@ -17,46 +18,66 @@ namespace SistemaEstoqueConfeitaria
             ConfigurarEventos();
         }
 
+        // ============================================================
+        // EVENTOS
+        // ============================================================
+
         private void ConfigurarEventos()
         {
-            // ========================================================
             // MENU LATERAL
-            // ========================================================
+            btnMenuPrincipal.Click +=
+                btnMenuPrincipal_Click;
 
-            btnMenuPrincipal.Click += btnMenuPrincipal_Click;
-            btnCadastroInsumos.Click += btnCadastroInsumos_Click;
-            btnMovimentarEstoque.Click += btnMovimentarEstoque_Click;
-            btnEstoqueAtual.Click += btnEstoqueAtual_Click;
-            btnListaCompras.Click += btnListaCompras_Click;
-            btnHistorico.Click += btnHistorico_Click;
-            btnSair.Click += btnSair_Click;
+            btnCadastroInsumos.Click +=
+                btnCadastroInsumos_Click;
 
-            // ========================================================
+            btnMovimentarEstoque.Click +=
+                btnMovimentarEstoque_Click;
+
+            btnEstoqueAtual.Click +=
+                btnEstoqueAtual_Click;
+
+            btnListaCompras.Click +=
+                btnListaCompras_Click;
+
+            btnHistorico.Click +=
+                btnHistorico_Click;
+
+            btnSair.Click +=
+                btnSair_Click;
+
             // CARDS
-            // ========================================================
+            btnAbrirEstoque.Click +=
+                btnAbrirEstoque_Click;
 
-            btnAbrirEstoque.Click += btnAbrirEstoque_Click;
-            btnAbrirMovimentacao.Click += btnAbrirMovimentacao_Click;
-            btnAbrirListaCompras.Click += btnAbrirListaCompras_Click;
+            btnAbrirMovimentacao.Click +=
+                btnAbrirMovimentacao_Click;
 
-            // ========================================================
+            btnAbrirListaCompras.Click +=
+                btnAbrirListaCompras_Click;
+
             // MOVER JANELA
-            // ========================================================
-
             MouseDown += Janela_MouseDown;
             MouseMove += Janela_MouseMove;
             MouseUp += Janela_MouseUp;
 
-            lblTitulo.MouseDown += Janela_MouseDown;
-            lblTitulo.MouseMove += Janela_MouseMove;
-            lblTitulo.MouseUp += Janela_MouseUp;
+            lblTitulo.MouseDown +=
+                Janela_MouseDown;
+
+            lblTitulo.MouseMove +=
+                Janela_MouseMove;
+
+            lblTitulo.MouseUp +=
+                Janela_MouseUp;
         }
 
         // ============================================================
         // MENU PRINCIPAL
         // ============================================================
 
-        private void btnMenuPrincipal_Click(object? sender, EventArgs e)
+        private void btnMenuPrincipal_Click(
+            object? sender,
+            EventArgs e)
         {
             // Já estamos no Menu Principal.
         }
@@ -65,98 +86,128 @@ namespace SistemaEstoqueConfeitaria
         // CADASTRO DE INSUMOS
         // ============================================================
 
-        private void btnCadastroInsumos_Click(object? sender, EventArgs e)
+        private void btnCadastroInsumos_Click(
+            object? sender,
+            EventArgs e)
         {
-            CadastroInsumos tela = new CadastroInsumos();
+            CadastroInsumos tela =
+                new CadastroInsumos();
 
             tela.Show();
 
-            this.Close();
-
-            // A tela Cadastro de Insumos será criada na próxima etapa.
+            this.Hide();
         }
 
         // ============================================================
         // MOVIMENTAR ESTOQUE
         // ============================================================
 
-        private void btnMovimentarEstoque_Click(object? sender, EventArgs e)
+        private void btnMovimentarEstoque_Click(
+            object? sender,
+            EventArgs e)
         {
-            // A tela Movimentar Estoque será criada depois.
+            MovimentarEstoque tela =
+                new MovimentarEstoque();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
         // ESTOQUE ATUAL
         // ============================================================
 
-        private void btnEstoqueAtual_Click(object? sender, EventArgs e)
+        private void btnEstoqueAtual_Click(
+            object? sender,
+            EventArgs e)
         {
-            // A tela Estoque Atual será criada depois.
+            // Vamos conectar quando criarmos EstoqueAtual.cs
         }
 
         // ============================================================
         // LISTA DE COMPRAS
         // ============================================================
 
-        private void btnListaCompras_Click(object? sender, EventArgs e)
+        private void btnListaCompras_Click(
+            object? sender,
+            EventArgs e)
         {
-            // A tela Lista de Compras será criada depois.
+            // Vamos conectar quando criarmos ListaCompras.cs
         }
 
         // ============================================================
         // HISTÓRICO
         // ============================================================
 
-        private void btnHistorico_Click(object? sender, EventArgs e)
+        private void btnHistorico_Click(
+            object? sender,
+            EventArgs e)
         {
-            // A tela Histórico será criada depois.
+            // Vamos conectar quando criarmos HistoricoMovimentacoes.cs
         }
 
         // ============================================================
         // CARD - ESTOQUE ATUAL
         // ============================================================
 
-        private void btnAbrirEstoque_Click(object? sender, EventArgs e)
+        private void btnAbrirEstoque_Click(
+            object? sender,
+            EventArgs e)
         {
-            // Será conectado à tela Estoque Atual.
+            // Será conectado ao Estoque Atual.
         }
 
         // ============================================================
-        // CARD - MOVIMENTAÇÃO
+        // CARD - MOVIMENTAR ESTOQUE
         // ============================================================
 
-        private void btnAbrirMovimentacao_Click(object? sender, EventArgs e)
+        private void btnAbrirMovimentacao_Click(
+            object? sender,
+            EventArgs e)
         {
-            // Será conectado à tela Movimentar Estoque.
+            MovimentarEstoque tela =
+                new MovimentarEstoque();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
         // CARD - LISTA DE COMPRAS
         // ============================================================
 
-        private void btnAbrirListaCompras_Click(object? sender, EventArgs e)
+        private void btnAbrirListaCompras_Click(
+            object? sender,
+            EventArgs e)
         {
-            // Será conectado à tela Lista de Compras.
+            // Será conectado à Lista de Compras.
         }
 
         // ============================================================
-        // SAIR / VOLTAR AO LOGIN
+        // SAIR
         // ============================================================
 
-        private void btnSair_Click(object? sender, EventArgs e)
+        private void btnSair_Click(
+            object? sender,
+            EventArgs e)
         {
-            TelaLogin login = new TelaLogin();
+            TelaLogin login =
+                new TelaLogin();
 
             login.Show();
 
-            this.Close();
+            this.Hide();
         }
 
         // ============================================================
         // MOVER JANELA
         // ============================================================
 
-        private void Janela_MouseDown(object? sender, MouseEventArgs e)
+        private void Janela_MouseDown(
+            object? sender,
+            MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
             {
@@ -165,12 +216,16 @@ namespace SistemaEstoqueConfeitaria
 
             arrastando = true;
 
-            posicaoMouseInicial = Cursor.Position;
+            posicaoMouseInicial =
+                Cursor.Position;
 
-            posicaoFormInicial = Location;
+            posicaoFormInicial =
+                Location;
         }
 
-        private void Janela_MouseMove(object? sender, MouseEventArgs e)
+        private void Janela_MouseMove(
+            object? sender,
+            MouseEventArgs e)
         {
             if (!arrastando)
             {
@@ -178,18 +233,26 @@ namespace SistemaEstoqueConfeitaria
             }
 
             int diferencaX =
-                Cursor.Position.X - posicaoMouseInicial.X;
+                Cursor.Position.X -
+                posicaoMouseInicial.X;
 
             int diferencaY =
-                Cursor.Position.Y - posicaoMouseInicial.Y;
+                Cursor.Position.Y -
+                posicaoMouseInicial.Y;
 
-            Location = new Point(
-                posicaoFormInicial.X + diferencaX,
-                posicaoFormInicial.Y + diferencaY
-            );
+            Location =
+                new Point(
+                    posicaoFormInicial.X +
+                    diferencaX,
+
+                    posicaoFormInicial.Y +
+                    diferencaY
+                );
         }
 
-        private void Janela_MouseUp(object? sender, MouseEventArgs e)
+        private void Janela_MouseUp(
+            object? sender,
+            MouseEventArgs e)
         {
             arrastando = false;
         }

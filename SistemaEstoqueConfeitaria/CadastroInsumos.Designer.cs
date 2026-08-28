@@ -238,7 +238,7 @@
             lblSubtitulo.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSubtitulo.ForeColor = Color.FromArgb(142, 111, 101);
             lblSubtitulo.ImageAlign = ContentAlignment.MiddleLeft;
-            lblSubtitulo.Location = new Point(340, 145);
+            lblSubtitulo.Location = new Point(335, 154);
             lblSubtitulo.Name = "lblSubtitulo";
             lblSubtitulo.Size = new Size(500, 35);
             lblSubtitulo.TabIndex = 3;

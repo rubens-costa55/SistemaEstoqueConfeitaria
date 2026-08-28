@@ -22,45 +22,77 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // CONFIGURAÇÃO DOS EVENTOS
+        // CONFIGURAR EVENTOS
         // ============================================================
 
         private void ConfigurarEventos()
         {
+            // Evita eventos duplicados
+            Load -= CadastroInsumos_Load;
             Load += CadastroInsumos_Load;
 
-            // Formulário
+            btnSalvar.Click -= btnSalvar_Click;
             btnSalvar.Click += btnSalvar_Click;
+
+            btnLimpar.Click -= btnLimpar_Click;
             btnLimpar.Click += btnLimpar_Click;
 
-            // Lista
+            dgvInsumos.CellClick -= dgvInsumos_CellClick;
             dgvInsumos.CellClick += dgvInsumos_CellClick;
+
+            txtPesquisar.TextChanged -= txtPesquisar_TextChanged;
             txtPesquisar.TextChanged += txtPesquisar_TextChanged;
 
+            btnEditar.Click -= btnEditar_Click;
             btnEditar.Click += btnEditar_Click;
+
+            btnExcluir.Click -= btnExcluir_Click;
             btnExcluir.Click += btnExcluir_Click;
 
-            // Menu lateral
+            // Menu
+            btnMenuPrincipal.Click -= btnMenuPrincipal_Click;
             btnMenuPrincipal.Click += btnMenuPrincipal_Click;
+
+            btnCadastroInsumos.Click -= btnCadastroInsumos_Click;
             btnCadastroInsumos.Click += btnCadastroInsumos_Click;
+
+            btnMovimentarEstoque.Click -= btnMovimentarEstoque_Click;
             btnMovimentarEstoque.Click += btnMovimentarEstoque_Click;
+
+            btnEstoqueAtual.Click -= btnEstoqueAtual_Click;
             btnEstoqueAtual.Click += btnEstoqueAtual_Click;
+
+            btnListaCompras.Click -= btnListaCompras_Click;
             btnListaCompras.Click += btnListaCompras_Click;
+
+            btnHistorico.Click -= btnHistorico_Click;
             btnHistorico.Click += btnHistorico_Click;
+
+            btnSair.Click -= btnSair_Click;
             btnSair.Click += btnSair_Click;
 
             // Mover janela
+            MouseDown -= Janela_MouseDown;
             MouseDown += Janela_MouseDown;
+
+            MouseMove -= Janela_MouseMove;
             MouseMove += Janela_MouseMove;
+
+            MouseUp -= Janela_MouseUp;
             MouseUp += Janela_MouseUp;
 
+            lblTitulo.MouseDown -= Janela_MouseDown;
             lblTitulo.MouseDown += Janela_MouseDown;
+
+            lblTitulo.MouseMove -= Janela_MouseMove;
             lblTitulo.MouseMove += Janela_MouseMove;
+
+            lblTitulo.MouseUp -= Janela_MouseUp;
             lblTitulo.MouseUp += Janela_MouseUp;
         }
 
         // ============================================================
-        // CARREGAMENTO
+        // CARREGAMENTO DA TELA
         // ============================================================
 
         private void CadastroInsumos_Load(object? sender, EventArgs e)
@@ -111,7 +143,7 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // CONFIGURAR DATAGRIDVIEW
+        // DATAGRIDVIEW
         // ============================================================
 
         private void ConfigurarDataGridView()
@@ -120,6 +152,7 @@ namespace SistemaEstoqueConfeitaria
 
             dgvInsumos.AllowUserToAddRows = false;
             dgvInsumos.AllowUserToDeleteRows = false;
+            dgvInsumos.AllowUserToResizeRows = false;
 
             dgvInsumos.MultiSelect = false;
 
@@ -130,10 +163,75 @@ namespace SistemaEstoqueConfeitaria
                 DataGridViewAutoSizeColumnsMode.Fill;
 
             dgvInsumos.RowHeadersVisible = false;
+
+            dgvInsumos.BackgroundColor = Color.White;
+
+            dgvInsumos.BorderStyle =
+                BorderStyle.FixedSingle;
+
+            dgvInsumos.GridColor =
+                Color.FromArgb(228, 206, 199);
+
+            // ========================================================
+            // CABEÇALHO
+            // ========================================================
+
+            dgvInsumos.EnableHeadersVisualStyles = false;
+
+            dgvInsumos.ColumnHeadersDefaultCellStyle.BackColor =
+                Color.FromArgb(239, 229, 226);
+
+            dgvInsumos.ColumnHeadersDefaultCellStyle.ForeColor =
+                Color.FromArgb(94, 74, 68);
+
+            dgvInsumos.ColumnHeadersDefaultCellStyle.Font =
+                new Font(
+                    "Segoe UI",
+                    9.5F,
+                    FontStyle.Bold
+                );
+
+            // Impede o cabeçalho de ficar azul
+            dgvInsumos.ColumnHeadersDefaultCellStyle.SelectionBackColor =
+                Color.FromArgb(239, 229, 226);
+
+            dgvInsumos.ColumnHeadersDefaultCellStyle.SelectionForeColor =
+                Color.FromArgb(94, 74, 68);
+
+            // ========================================================
+            // LINHAS NORMAIS
+            // ========================================================
+
+            dgvInsumos.DefaultCellStyle.BackColor =
+                Color.White;
+
+            dgvInsumos.DefaultCellStyle.ForeColor =
+                Color.FromArgb(94, 74, 68);
+
+            dgvInsumos.DefaultCellStyle.Font =
+                new Font(
+                    "Segoe UI",
+                    9.5F,
+                    FontStyle.Regular
+                );
+
+            // ========================================================
+            // LINHA SELECIONADA
+            // ========================================================
+
+            dgvInsumos.DefaultCellStyle.SelectionBackColor =
+                Color.FromArgb(184, 112, 121);
+
+            dgvInsumos.DefaultCellStyle.SelectionForeColor =
+                Color.White;
+
+            // Linha alternada levemente diferente
+            dgvInsumos.AlternatingRowsDefaultCellStyle.BackColor =
+                Color.FromArgb(252, 250, 249);
         }
 
         // ============================================================
-        // SALVAR
+        // SALVAR NOVO INSUMO
         // ============================================================
 
         private void btnSalvar_Click(object? sender, EventArgs e)
@@ -147,7 +245,8 @@ namespace SistemaEstoqueConfeitaria
             {
                 conexao banco = new conexao();
 
-                using MySqlConnection con = banco.Conectar();
+                using MySqlConnection con =
+                    banco.Conectar();
 
                 con.Open();
 
@@ -314,7 +413,8 @@ namespace SistemaEstoqueConfeitaria
             {
                 conexao banco = new conexao();
 
-                using MySqlConnection con = banco.Conectar();
+                using MySqlConnection con =
+                    banco.Conectar();
 
                 con.Open();
 
@@ -348,12 +448,25 @@ namespace SistemaEstoqueConfeitaria
 
                 adapter.Fill(tabela);
 
-                dgvInsumos.DataSource = tabela;
+                dgvInsumos.DataSource =
+                    tabela;
 
                 if (dgvInsumos.Columns["id"] != null)
                 {
-                    dgvInsumos.Columns["id"].Visible = false;
+                    dgvInsumos.Columns["id"].Visible =
+                        false;
                 }
+
+                // ====================================================
+                // IMPORTANTE:
+                // NÃO DEIXA A PRIMEIRA LINHA SELECIONADA SOZINHA
+                // ====================================================
+
+                dgvInsumos.ClearSelection();
+
+                dgvInsumos.CurrentCell = null;
+
+                idSelecionado = 0;
             }
             catch (Exception ex)
             {
@@ -381,7 +494,7 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // SELECIONAR ITEM DA LISTA
+        // CLICAR EM UMA LINHA
         // ============================================================
 
         private void dgvInsumos_CellClick(
@@ -411,7 +524,9 @@ namespace SistemaEstoqueConfeitaria
         // EDITAR
         // ============================================================
 
-        private void btnEditar_Click(object? sender, EventArgs e)
+        private void btnEditar_Click(
+            object? sender,
+            EventArgs e)
         {
             if (idSelecionado == 0)
             {
@@ -432,7 +547,8 @@ namespace SistemaEstoqueConfeitaria
         {
             try
             {
-                conexao banco = new conexao();
+                conexao banco =
+                    new conexao();
 
                 using MySqlConnection con =
                     banco.Conectar();
@@ -746,6 +862,7 @@ namespace SistemaEstoqueConfeitaria
             txtObservacao.Clear();
 
             dgvInsumos.ClearSelection();
+            dgvInsumos.CurrentCell = null;
 
             txtNome.Focus();
         }
@@ -778,7 +895,7 @@ namespace SistemaEstoqueConfeitaria
 
             menu.Show();
 
-            this.Close();
+            this.Hide();
         }
 
         // ============================================================
@@ -789,17 +906,23 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Já estamos nesta tela.
+            // Já estamos nesta tela
         }
 
         // ============================================================
-        // TELAS QUE AINDA SERÃO CRIADAS
+        // PRÓXIMAS TELAS
         // ============================================================
 
         private void btnMovimentarEstoque_Click(
             object? sender,
             EventArgs e)
         {
+            MovimentarEstoque tela =
+       new MovimentarEstoque();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         private void btnEstoqueAtual_Click(
@@ -833,7 +956,7 @@ namespace SistemaEstoqueConfeitaria
 
             login.Show();
 
-            this.Close();
+            this.Hide();
         }
 
         // ============================================================
@@ -875,11 +998,10 @@ namespace SistemaEstoqueConfeitaria
                 Cursor.Position.Y -
                 posicaoMouseInicial.Y;
 
-            Location =
-                new Point(
-                    posicaoFormInicial.X + diferencaX,
-                    posicaoFormInicial.Y + diferencaY
-                );
+            Location = new Point(
+                posicaoFormInicial.X + diferencaX,
+                posicaoFormInicial.Y + diferencaY
+            );
         }
 
         private void Janela_MouseUp(
