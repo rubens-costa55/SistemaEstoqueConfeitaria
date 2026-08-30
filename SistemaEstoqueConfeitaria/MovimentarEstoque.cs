@@ -701,21 +701,36 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Criamos depois.
+            EstoqueAtual tela =
+       new EstoqueAtual();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         private void btnListaCompras_Click(
             object? sender,
             EventArgs e)
         {
-            // Criamos depois.
+            ListaCompras tela =
+       new ListaCompras();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         private void btnHistorico_Click(
             object? sender,
             EventArgs e)
         {
-            // Criamos depois.
+            HistoricoMovimentacoes tela =
+        new HistoricoMovimentacoes();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         private void btnSair_Click(

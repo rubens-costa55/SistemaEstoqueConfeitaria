@@ -906,7 +906,7 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Já estamos nesta tela
+            
         }
 
         // ============================================================
@@ -929,18 +929,36 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
+            EstoqueAtual tela =
+    new EstoqueAtual();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         private void btnListaCompras_Click(
             object? sender,
             EventArgs e)
         {
+            ListaCompras tela =
+       new ListaCompras();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         private void btnHistorico_Click(
             object? sender,
             EventArgs e)
         {
+            HistoricoMovimentacoes tela =
+        new HistoricoMovimentacoes();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================

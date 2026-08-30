@@ -122,7 +122,12 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Vamos conectar quando criarmos EstoqueAtual.cs
+            EstoqueAtual tela =
+    new EstoqueAtual();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
@@ -133,7 +138,12 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Vamos conectar quando criarmos ListaCompras.cs
+            ListaCompras tela =
+       new ListaCompras();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
@@ -144,7 +154,12 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Vamos conectar quando criarmos HistoricoMovimentacoes.cs
+            HistoricoMovimentacoes tela =
+        new HistoricoMovimentacoes();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
@@ -155,7 +170,12 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Será conectado ao Estoque Atual.
+            EstoqueAtual tela =
+    new EstoqueAtual();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
@@ -182,7 +202,12 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            // Será conectado à Lista de Compras.
+            ListaCompras tela =
+        new ListaCompras();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================

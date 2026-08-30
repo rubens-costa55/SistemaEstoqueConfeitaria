@@ -7,135 +7,186 @@ namespace SistemaEstoqueConfeitaria
 {
     public partial class TelaLogin : Form
     {
-        // Controla a exibição da senha
+        // ============================================================
+        // VARIÁVEIS
+        // ============================================================
+
         private bool senhaVisivel = false;
 
-        // Variáveis para mover a janela
         private bool arrastando = false;
         private Point posicaoMouseInicial;
         private Point posicaoFormInicial;
+
+        // ============================================================
+        // CONSTRUTOR
+        // ============================================================
 
         public TelaLogin()
         {
             InitializeComponent();
 
             ConfigurarEventos();
+
+            ConfigurarSenhaInicial();
         }
 
         // ============================================================
-        // CONFIGURAÇÃO DOS EVENTOS
+        // CONFIGURAR EVENTOS
         // ============================================================
 
         private void ConfigurarEventos()
         {
-            // Carregamento
-            Load += TelaLogin_Load;
-
-            // Botões
-            lblSair.Click += lblSair_Click;
-            pbolhosenha.Click += pbolhosenha_Click;
+            // BOTÃO ACESSAR
+            btnAcessar.Click -= btnAcessar_Click;
             btnAcessar.Click += btnAcessar_Click;
+
+            // ESQUECI MINHA SENHA
+            btnEsqueciSenha.Click -= btnEsqueciSenha_Click;
             btnEsqueciSenha.Click += btnEsqueciSenha_Click;
 
-            // Efeitos do botão Acessar
-            btnAcessar.MouseEnter += btnAcessar_MouseEnter;
-            btnAcessar.MouseLeave += btnAcessar_MouseLeave;
-            btnAcessar.MouseDown += btnAcessar_MouseDown;
-            btnAcessar.MouseUp += btnAcessar_MouseUp;
+            // OLHO DA SENHA
+            pbolhosenha.Click -= pbolhosenha_Click;
+            pbolhosenha.Click += pbolhosenha_Click;
 
-            // Permitir mover a janela
+            // SAIR
+            lblSair.Click -= lblSair_Click;
+            lblSair.Click += lblSair_Click;
+
+            // CPF
+            txtcpf.KeyPress -= txtcpf_KeyPress;
+            txtcpf.KeyPress += txtcpf_KeyPress;
+
+            // ENTER PARA FAZER LOGIN
+            txtSenha.KeyDown -= txtSenha_KeyDown;
+            txtSenha.KeyDown += txtSenha_KeyDown;
+
+            // EFEITO BOTÃO ACESSAR
+            btnAcessar.MouseEnter -= btnAcessar_MouseEnter;
+            btnAcessar.MouseEnter += btnAcessar_MouseEnter;
+
+            btnAcessar.MouseLeave -= btnAcessar_MouseLeave;
+            btnAcessar.MouseLeave += btnAcessar_MouseLeave;
+
+            // EFEITO ESQUECI SENHA
+            btnEsqueciSenha.MouseEnter -= btnEsqueciSenha_MouseEnter;
+            btnEsqueciSenha.MouseEnter += btnEsqueciSenha_MouseEnter;
+
+            btnEsqueciSenha.MouseLeave -= btnEsqueciSenha_MouseLeave;
+            btnEsqueciSenha.MouseLeave += btnEsqueciSenha_MouseLeave;
+
+            // ========================================================
+            // MOVER JANELA
+            // ========================================================
+
+            MouseDown -= Janela_MouseDown;
             MouseDown += Janela_MouseDown;
+
+            MouseMove -= Janela_MouseMove;
             MouseMove += Janela_MouseMove;
+
+            MouseUp -= Janela_MouseUp;
             MouseUp += Janela_MouseUp;
 
+            panel1.MouseDown -= Janela_MouseDown;
             panel1.MouseDown += Janela_MouseDown;
+
+            panel1.MouseMove -= Janela_MouseMove;
             panel1.MouseMove += Janela_MouseMove;
+
+            panel1.MouseUp -= Janela_MouseUp;
             panel1.MouseUp += Janela_MouseUp;
 
+            lblLogin.MouseDown -= Janela_MouseDown;
             lblLogin.MouseDown += Janela_MouseDown;
-            lblLogin.MouseMove += Janela_MouseMove;
-            lblLogin.MouseUp += Janela_MouseUp;
 
-            // Enter = Acessar
-            AcceptButton = btnAcessar;
+            lblLogin.MouseMove -= Janela_MouseMove;
+            lblLogin.MouseMove += Janela_MouseMove;
+
+            lblLogin.MouseUp -= Janela_MouseUp;
+            lblLogin.MouseUp += Janela_MouseUp;
         }
 
         // ============================================================
-        // CARREGAMENTO
+        // CONFIGURAR SENHA AO ABRIR
         // ============================================================
 
-        private void TelaLogin_Load(object? sender, EventArgs e)
+        private void ConfigurarSenhaInicial()
         {
             senhaVisivel = false;
 
+            // IMPORTANTE:
+            // deixamos PasswordChar zerado e usamos
+            // UseSystemPasswordChar para mostrar/esconder.
+            txtSenha.PasswordChar = '\0';
+
             txtSenha.UseSystemPasswordChar = true;
 
-            AtualizarIconeOlho();
+            pbolhosenha.SizeMode =
+                PictureBoxSizeMode.Zoom;
 
-            txtcpf.Focus();
-        }
+            pbolhosenha.Cursor =
+                Cursors.Hand;
 
-        // ============================================================
-        // BOTÃO X
-        // ============================================================
-
-        private void lblSair_Click(object? sender, EventArgs e)
-        {
-            DialogResult resultado = MessageBox.Show(
-                "Deseja realmente sair do sistema?",
-                "Sair",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question
-            );
-
-            if (resultado == DialogResult.Yes)
-            {
-                Application.Exit();
-            }
+            AtualizarImagemOlho();
         }
 
         // ============================================================
         // MOSTRAR / ESCONDER SENHA
         // ============================================================
 
-        private void pbolhosenha_Click(object? sender, EventArgs e)
+        private void pbolhosenha_Click(
+            object? sender,
+            EventArgs e)
         {
             senhaVisivel = !senhaVisivel;
 
-            txtSenha.UseSystemPasswordChar = !senhaVisivel;
+            if (senhaVisivel)
+            {
+                // MOSTRAR SENHA
+                txtSenha.UseSystemPasswordChar = false;
+            }
+            else
+            {
+                // ESCONDER SENHA
+                txtSenha.UseSystemPasswordChar = true;
+            }
 
-            AtualizarIconeOlho();
+            AtualizarImagemOlho();
 
             txtSenha.Focus();
 
-            txtSenha.SelectionStart = txtSenha.Text.Length;
+            // Coloca cursor no final da senha
+            txtSenha.SelectionStart =
+                txtSenha.Text.Length;
         }
 
-        private void AtualizarIconeOlho()
+        // ============================================================
+        // ATUALIZAR IMAGEM DO OLHO
+        // ============================================================
+
+        private void AtualizarImagemOlho()
         {
             try
             {
                 if (senhaVisivel)
                 {
-                    // Senha visível = olho fechado
+                    // SENHA VISÍVEL
                     pbolhosenha.Image =
-                        Properties.Resources.ResourceManager.GetObject(
-                            "olho_fechado"
-                        ) as System.Drawing.Image;
+                        Properties.Resources.ResourceManager
+                        .GetObject("olho fechado") as Image;
                 }
                 else
                 {
-                    // Senha escondida = olho aberto
+                    // SENHA ESCONDIDA
                     pbolhosenha.Image =
-                        Properties.Resources.ResourceManager.GetObject(
-                            "olho_aberto"
-                        ) as System.Drawing.Image;
+                        Properties.Resources.ResourceManager
+                        .GetObject("olho aberto") as Image;
                 }
             }
             catch
             {
-                // Caso o recurso da imagem não seja encontrado,
-                // o restante do sistema continua funcionando.
+                // Se houver algum problema com a imagem,
+                // o mostrar/esconder senha continua funcionando.
             }
         }
 
@@ -143,16 +194,15 @@ namespace SistemaEstoqueConfeitaria
         // BOTÃO ACESSAR
         // ============================================================
 
-        private void btnAcessar_Click(object? sender, EventArgs e)
+        private void btnAcessar_Click(
+            object? sender,
+            EventArgs e)
         {
-            // Remove pontos, traço e espaços do CPF
-            string cpf = txtcpf.Text
-                .Trim()
-                .Replace(".", "")
-                .Replace("-", "")
-                .Replace(" ", "");
+            string cpf =
+                LimparCpf(txtcpf.Text);
 
-            string senha = txtSenha.Text.Trim();
+            string senha =
+                txtSenha.Text;
 
             // ========================================================
             // VALIDAR CPF
@@ -161,8 +211,22 @@ namespace SistemaEstoqueConfeitaria
             if (string.IsNullOrWhiteSpace(cpf))
             {
                 MessageBox.Show(
-                    "Digite o CPF para continuar.",
+                    "Digite o CPF.",
                     "Campo obrigatório",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                txtcpf.Focus();
+
+                return;
+            }
+
+            if (cpf.Length != 11)
+            {
+                MessageBox.Show(
+                    "Digite um CPF com 11 números.",
+                    "CPF inválido",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -179,7 +243,7 @@ namespace SistemaEstoqueConfeitaria
             if (string.IsNullOrWhiteSpace(senha))
             {
                 MessageBox.Show(
-                    "Digite a senha para continuar.",
+                    "Digite a senha.",
                     "Campo obrigatório",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
@@ -191,30 +255,31 @@ namespace SistemaEstoqueConfeitaria
             }
 
             // ========================================================
-            // CONEXÃO COM MYSQL
+            // CONSULTAR BANCO
             // ========================================================
 
             try
             {
-                conexao banco = new conexao();
+                conexao banco =
+                    new conexao();
 
-                using MySqlConnection con = banco.Conectar();
+                using MySqlConnection con =
+                    banco.Conectar();
 
                 con.Open();
 
-                // ====================================================
-                // CONSULTAR LOGIN
-                // ====================================================
-
                 string sql =
-                    "SELECT id " +
-                    "FROM login " +
-                    "WHERE cpf = @cpf " +
-                    "AND senha = @senha " +
-                    "LIMIT 1;";
+                    @"SELECT id
+                      FROM login
+                      WHERE cpf = @cpf
+                      AND senha = @senha
+                      LIMIT 1;";
 
                 using MySqlCommand cmd =
-                    new MySqlCommand(sql, con);
+                    new MySqlCommand(
+                        sql,
+                        con
+                    );
 
                 cmd.Parameters.AddWithValue(
                     "@cpf",
@@ -226,14 +291,14 @@ namespace SistemaEstoqueConfeitaria
                     senha
                 );
 
-                using MySqlDataReader leitor =
-                    cmd.ExecuteReader();
+                object? resultado =
+                    cmd.ExecuteScalar();
 
                 // ====================================================
                 // LOGIN CORRETO
                 // ====================================================
 
-                if (leitor.Read())
+                if (resultado != null)
                 {
                     MenuPrincipal menu =
                         new MenuPrincipal();
@@ -250,37 +315,35 @@ namespace SistemaEstoqueConfeitaria
                 else
                 {
                     MessageBox.Show(
-                        "CPF ou senha inválidos.",
-                        "Login não realizado",
+                        "CPF ou senha incorretos.",
+                        "Acesso não autorizado",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
 
                     txtSenha.Clear();
 
+                    senhaVisivel = false;
+
+                    txtSenha.UseSystemPasswordChar =
+                        true;
+
+                    AtualizarImagemOlho();
+
                     txtSenha.Focus();
                 }
             }
 
-            // ========================================================
-            // ERRO MYSQL
-            // ========================================================
-
             catch (MySqlException ex)
             {
                 MessageBox.Show(
-                    "Não foi possível conectar ao banco de dados.\n\n" +
-                    "Verifique se o MySQL está iniciado no XAMPP.\n\n" +
-                    "Detalhes: " + ex.Message,
+                    "Não foi possível acessar o banco de dados.\n\n" +
+                    ex.Message,
                     "Erro no banco de dados",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
             }
-
-            // ========================================================
-            // OUTROS ERROS
-            // ========================================================
 
             catch (Exception ex)
             {
@@ -298,14 +361,67 @@ namespace SistemaEstoqueConfeitaria
         // ESQUECI MINHA SENHA
         // ============================================================
 
-        private void btnEsqueciSenha_Click(object? sender, EventArgs e)
+        private void btnEsqueciSenha_Click(
+            object? sender,
+            EventArgs e)
         {
-            // Não faz nada por enquanto.
-            // Depois vamos abrir a tela de redefinição de senha.
+            RedefinirSenha tela =
+                new RedefinirSenha();
+
+            tela.Show();
+
+            this.Hide();
         }
 
         // ============================================================
-        // EFEITOS DO BOTÃO ACESSAR
+        // ENTER PARA ENTRAR
+        // ============================================================
+
+        private void txtSenha_KeyDown(
+            object? sender,
+            KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnAcessar.PerformClick();
+
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        // ============================================================
+        // LIMPAR CPF
+        // ============================================================
+
+        private string LimparCpf(
+            string cpf)
+        {
+            return cpf
+                .Replace(".", "")
+                .Replace("-", "")
+                .Replace(" ", "")
+                .Trim();
+        }
+
+        // ============================================================
+        // CPF - ACEITAR SOMENTE NÚMEROS, PONTO E TRAÇO
+        // ============================================================
+
+        private void txtcpf_KeyPress(
+            object? sender,
+            KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) &&
+                !char.IsDigit(e.KeyChar) &&
+                e.KeyChar != '.' &&
+                e.KeyChar != '-')
+            {
+                e.Handled = true;
+            }
+        }
+
+        // ============================================================
+        // EFEITOS DOS BOTÕES
         // ============================================================
 
         private void btnAcessar_MouseEnter(
@@ -313,7 +429,11 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             btnAcessar.BackColor =
-                Color.FromArgb(190, 125, 108);
+                Color.FromArgb(
+                    184,
+                    112,
+                    121
+                );
         }
 
         private void btnAcessar_MouseLeave(
@@ -321,34 +441,70 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             btnAcessar.BackColor =
-                Color.FromArgb(201, 142, 124);
+                Color.FromArgb(
+                    201,
+                    142,
+                    124
+                );
         }
 
-        private void btnAcessar_MouseDown(
+        private void btnEsqueciSenha_MouseEnter(
             object? sender,
-            MouseEventArgs e)
+            EventArgs e)
         {
-            btnAcessar.BackColor =
-                Color.FromArgb(170, 105, 90);
+            btnEsqueciSenha.BackColor =
+                Color.FromArgb(
+                    184,
+                    112,
+                    121
+                );
         }
 
-        private void btnAcessar_MouseUp(
+        private void btnEsqueciSenha_MouseLeave(
             object? sender,
-            MouseEventArgs e)
+            EventArgs e)
         {
-            btnAcessar.BackColor =
-                Color.FromArgb(190, 125, 108);
+            btnEsqueciSenha.BackColor =
+                Color.FromArgb(
+                    201,
+                    142,
+                    124
+                );
         }
 
         // ============================================================
-        // MOVER A JANELA
+        // SAIR
+        // ============================================================
+
+        private void lblSair_Click(
+            object? sender,
+            EventArgs e)
+        {
+            DialogResult resposta =
+                MessageBox.Show(
+                    "Deseja fechar o sistema?",
+                    "Sair",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+            if (resposta ==
+                DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
+        // ============================================================
+        // MOVER JANELA
         // ============================================================
 
         private void Janela_MouseDown(
             object? sender,
             MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left)
+            if (e.Button !=
+                MouseButtons.Left)
             {
                 return;
             }
@@ -379,10 +535,14 @@ namespace SistemaEstoqueConfeitaria
                 Cursor.Position.Y -
                 posicaoMouseInicial.Y;
 
-            Location = new Point(
-                posicaoFormInicial.X + diferencaX,
-                posicaoFormInicial.Y + diferencaY
-            );
+            Location =
+                new Point(
+                    posicaoFormInicial.X +
+                    diferencaX,
+
+                    posicaoFormInicial.Y +
+                    diferencaY
+                );
         }
 
         private void Janela_MouseUp(

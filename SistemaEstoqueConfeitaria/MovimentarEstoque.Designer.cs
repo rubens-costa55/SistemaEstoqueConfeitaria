@@ -436,7 +436,7 @@
             // 
             // btnMovimentarEstoque
             // 
-            btnMovimentarEstoque.BackColor = Color.FromArgb(201, 142, 124);
+            btnMovimentarEstoque.BackColor = Color.FromArgb(184, 112, 121);
             btnMovimentarEstoque.Cursor = Cursors.Hand;
             btnMovimentarEstoque.FlatAppearance.BorderColor = Color.FromArgb(228, 206, 199);
             btnMovimentarEstoque.FlatStyle = FlatStyle.Flat;
@@ -451,7 +451,7 @@
             // 
             // btnCadastroInsumos
             // 
-            btnCadastroInsumos.BackColor = Color.FromArgb(184, 112, 121);
+            btnCadastroInsumos.BackColor = Color.FromArgb(201, 142, 124);
             btnCadastroInsumos.Cursor = Cursors.Hand;
             btnCadastroInsumos.FlatAppearance.BorderColor = Color.FromArgb(228, 206, 199);
             btnCadastroInsumos.FlatStyle = FlatStyle.Flat;
