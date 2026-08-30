@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Data.Sqlite;
 
@@ -55,6 +56,9 @@ namespace SistemaEstoqueConfeitaria
 
             txtCpf.KeyPress +=
                 txtCpf_KeyPress;
+
+            txtNovaSenha.TextChanged +=
+                txtNovaSenha_TextChanged;
 
             MouseDown +=
                 Janela_MouseDown;
@@ -142,11 +146,17 @@ namespace SistemaEstoqueConfeitaria
                 return;
             }
 
-            if (novaSenha.Length < 4)
+            if (!SenhaAtendeRequisitos(novaSenha))
             {
                 MessageBox.Show(
-                    "A nova senha deve possuir pelo menos 4 caracteres.",
-                    "Senha inválida",
+                    "A nova senha precisa ter:\n\n" +
+                    "• no mínimo 8 caracteres;\n" +
+                    "• pelo menos 1 letra;\n" +
+                    "• pelo menos 1 letra maiúscula;\n" +
+                    "• pelo menos 1 número;\n" +
+                    "• pelo menos 1 caractere especial;\n" +
+                    "• nenhum espaço.",
+                    "Senha não atende aos requisitos",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
@@ -310,6 +320,198 @@ namespace SistemaEstoqueConfeitaria
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        // ============================================================
+        // FORÇA E REGRAS DA SENHA
+        // ============================================================
+
+        private void txtNovaSenha_TextChanged(
+            object? sender,
+            EventArgs e)
+        {
+            AtualizarForcaSenha();
+        }
+
+        private bool SenhaAtendeRequisitos(
+            string senha)
+        {
+            if (string.IsNullOrEmpty(senha))
+            {
+                return false;
+            }
+
+            bool minimoOito =
+                senha.Length >= 8;
+
+            bool temLetra =
+                senha.Any(char.IsLetter);
+
+            bool temMaiuscula =
+                senha.Any(char.IsUpper);
+
+            bool temNumero =
+                senha.Any(char.IsDigit);
+
+            bool temEspecial =
+                senha.Any(c =>
+                    !char.IsLetterOrDigit(c) &&
+                    !char.IsWhiteSpace(c));
+
+            bool temEspaco =
+                senha.Any(char.IsWhiteSpace);
+
+            return
+                minimoOito &&
+                temLetra &&
+                temMaiuscula &&
+                temNumero &&
+                temEspecial &&
+                !temEspaco;
+        }
+
+        private void AtualizarForcaSenha()
+        {
+            string senha =
+                txtNovaSenha.Text;
+
+            if (string.IsNullOrEmpty(senha))
+            {
+                lblForcaSenha.Text =
+                    "Digite uma senha para verificar a força";
+
+                lblForcaSenha.ForeColor =
+                    Color.FromArgb(142, 111, 101);
+
+                panelForca.BackColor =
+                    Color.FromArgb(220, 211, 208);
+
+                panelForca.Width = 0;
+
+                lblRegrasSenha.Text =
+                    "8+ caracteres • maiúscula • letra • número • especial • sem espaços";
+
+                lblRegrasSenha.ForeColor =
+                    Color.FromArgb(142, 111, 101);
+
+                return;
+            }
+
+            bool minimoOito =
+                senha.Length >= 8;
+
+            bool temLetra =
+                senha.Any(char.IsLetter);
+
+            bool temMaiuscula =
+                senha.Any(char.IsUpper);
+
+            bool temNumero =
+                senha.Any(char.IsDigit);
+
+            bool temEspecial =
+                senha.Any(c =>
+                    !char.IsLetterOrDigit(c) &&
+                    !char.IsWhiteSpace(c));
+
+            bool temEspaco =
+                senha.Any(char.IsWhiteSpace);
+
+            int pontos = 0;
+
+            if (minimoOito) pontos++;
+            if (temLetra) pontos++;
+            if (temMaiuscula) pontos++;
+            if (temNumero) pontos++;
+            if (temEspecial) pontos++;
+
+            if (temEspaco)
+            {
+                lblForcaSenha.Text =
+                    "Senha inválida — não use espaços";
+
+                lblForcaSenha.ForeColor =
+                    Color.FromArgb(190, 70, 70);
+
+                panelForca.BackColor =
+                    Color.FromArgb(220, 90, 90);
+
+                panelForca.Width =
+                    panelForcaFundo.Width / 3;
+            }
+            else if (SenhaAtendeRequisitos(senha))
+            {
+                lblForcaSenha.Text =
+                    "Senha forte ✓";
+
+                lblForcaSenha.ForeColor =
+                    Color.FromArgb(61, 140, 92);
+
+                panelForca.BackColor =
+                    Color.FromArgb(76, 175, 110);
+
+                panelForca.Width =
+                    panelForcaFundo.Width;
+            }
+            else if (pontos >= 3)
+            {
+                lblForcaSenha.Text =
+                    "Senha média";
+
+                lblForcaSenha.ForeColor =
+                    Color.FromArgb(196, 132, 48);
+
+                panelForca.BackColor =
+                    Color.FromArgb(230, 166, 70);
+
+                panelForca.Width =
+                    (panelForcaFundo.Width * 2) / 3;
+            }
+            else
+            {
+                lblForcaSenha.Text =
+                    "Senha fraca";
+
+                lblForcaSenha.ForeColor =
+                    Color.FromArgb(190, 70, 70);
+
+                panelForca.BackColor =
+                    Color.FromArgb(220, 90, 90);
+
+                panelForca.Width =
+                    panelForcaFundo.Width / 3;
+            }
+
+            string regraTamanho =
+                minimoOito ? "✓ 8+" : "• 8+";
+
+            string regraMaiuscula =
+                temMaiuscula ? "✓ Maiúscula" : "• Maiúscula";
+
+            string regraLetra =
+                temLetra ? "✓ Letra" : "• Letra";
+
+            string regraNumero =
+                temNumero ? "✓ Número" : "• Número";
+
+            string regraEspecial =
+                temEspecial ? "✓ Especial" : "• Especial";
+
+            string regraEspaco =
+                !temEspaco ? "✓ Sem espaços" : "✕ Sem espaços";
+
+            lblRegrasSenha.Text =
+                regraTamanho + "   " +
+                regraMaiuscula + "   " +
+                regraLetra + "   " +
+                regraNumero + "   " +
+                regraEspecial + "   " +
+                regraEspaco;
+
+            lblRegrasSenha.ForeColor =
+                SenhaAtendeRequisitos(senha)
+                    ? Color.FromArgb(61, 140, 92)
+                    : Color.FromArgb(142, 111, 101);
         }
 
         // ============================================================

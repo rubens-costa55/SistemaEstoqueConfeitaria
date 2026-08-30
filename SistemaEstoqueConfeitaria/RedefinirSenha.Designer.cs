@@ -30,6 +30,10 @@ namespace SistemaEstoqueConfeitaria
             lblNovaSenha = new Label();
             txtNovaSenha = new TextBox();
             pbolhoNovaSenha = new PictureBox();
+            lblForcaSenha = new Label();
+            panelForcaFundo = new Panel();
+            panelForca = new Panel();
+            lblRegrasSenha = new Label();
             lblConfirmarSenha = new Label();
             txtConfirmarSenha = new TextBox();
             pbolhoConfirmarSenha = new PictureBox();
@@ -54,6 +58,9 @@ namespace SistemaEstoqueConfeitaria
             panelPrincipal.Controls.Add(lblNovaSenha);
             panelPrincipal.Controls.Add(txtNovaSenha);
             panelPrincipal.Controls.Add(pbolhoNovaSenha);
+            panelPrincipal.Controls.Add(lblForcaSenha);
+            panelPrincipal.Controls.Add(panelForcaFundo);
+            panelPrincipal.Controls.Add(lblRegrasSenha);
             panelPrincipal.Controls.Add(lblConfirmarSenha);
             panelPrincipal.Controls.Add(txtConfirmarSenha);
             panelPrincipal.Controls.Add(pbolhoConfirmarSenha);
@@ -150,11 +157,50 @@ namespace SistemaEstoqueConfeitaria
             pbolhoNovaSenha.TabIndex = 7;
             pbolhoNovaSenha.TabStop = false;
             // 
+            // lblForcaSenha
+            // 
+            lblForcaSenha.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblForcaSenha.ForeColor = Color.FromArgb(142, 111, 101);
+            lblForcaSenha.Location = new Point(80, 458);
+            lblForcaSenha.Name = "lblForcaSenha";
+            lblForcaSenha.Size = new Size(490, 22);
+            lblForcaSenha.TabIndex = 13;
+            lblForcaSenha.Text = "Digite uma senha para verificar a força";
+            // 
+            // panelForcaFundo
+            // 
+            panelForcaFundo.BackColor = Color.FromArgb(231, 222, 219);
+            panelForcaFundo.Controls.Add(panelForca);
+            panelForcaFundo.Location = new Point(80, 482);
+            panelForcaFundo.Name = "panelForcaFundo";
+            panelForcaFundo.Size = new Size(490, 6);
+            panelForcaFundo.TabIndex = 14;
+            // 
+            // panelForca
+            // 
+            panelForca.BackColor = Color.FromArgb(220, 211, 208);
+            panelForca.Dock = DockStyle.Left;
+            panelForca.Location = new Point(0, 0);
+            panelForca.Name = "panelForca";
+            panelForca.Size = new Size(0, 6);
+            panelForca.TabIndex = 0;
+            // 
+            // lblRegrasSenha
+            // 
+            lblRegrasSenha.Font = new Font("Segoe UI", 8.5F);
+            lblRegrasSenha.ForeColor = Color.FromArgb(142, 111, 101);
+            lblRegrasSenha.Location = new Point(80, 493);
+            lblRegrasSenha.Name = "lblRegrasSenha";
+            lblRegrasSenha.Size = new Size(500, 24);
+            lblRegrasSenha.TabIndex = 15;
+            lblRegrasSenha.Text = "8+ caracteres • maiúscula • letra • número • especial • sem espaços";
+            // 
+            // 
             // lblConfirmarSenha
             // 
             lblConfirmarSenha.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblConfirmarSenha.ForeColor = Color.FromArgb(123, 97, 88);
-            lblConfirmarSenha.Location = new Point(80, 480);
+            lblConfirmarSenha.Location = new Point(80, 525);
             lblConfirmarSenha.Name = "lblConfirmarSenha";
             lblConfirmarSenha.Size = new Size(200, 25);
             lblConfirmarSenha.TabIndex = 8;
@@ -163,7 +209,7 @@ namespace SistemaEstoqueConfeitaria
             // txtConfirmarSenha
             // 
             txtConfirmarSenha.Font = new Font("Segoe UI", 11F);
-            txtConfirmarSenha.Location = new Point(80, 510);
+            txtConfirmarSenha.Location = new Point(80, 555);
             txtConfirmarSenha.MaxLength = 100;
             txtConfirmarSenha.Name = "txtConfirmarSenha";
             txtConfirmarSenha.PasswordChar = '●';
@@ -176,7 +222,7 @@ namespace SistemaEstoqueConfeitaria
             pbolhoConfirmarSenha.BackColor = Color.Transparent;
             pbolhoConfirmarSenha.Cursor = Cursors.Hand;
             pbolhoConfirmarSenha.Image = Properties.Resources.olho_aberto;
-            pbolhoConfirmarSenha.Location = new Point(535, 510);
+            pbolhoConfirmarSenha.Location = new Point(535, 555);
             pbolhoConfirmarSenha.Name = "pbolhoConfirmarSenha";
             pbolhoConfirmarSenha.Size = new Size(35, 30);
             pbolhoConfirmarSenha.SizeMode = PictureBoxSizeMode.Zoom;
@@ -191,7 +237,7 @@ namespace SistemaEstoqueConfeitaria
             btnRedefinir.FlatStyle = FlatStyle.Flat;
             btnRedefinir.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnRedefinir.ForeColor = Color.White;
-            btnRedefinir.Location = new Point(80, 575);
+            btnRedefinir.Location = new Point(80, 605);
             btnRedefinir.Name = "btnRedefinir";
             btnRedefinir.Size = new Size(490, 48);
             btnRedefinir.TabIndex = 11;
@@ -206,7 +252,7 @@ namespace SistemaEstoqueConfeitaria
             btnVoltar.FlatStyle = FlatStyle.Flat;
             btnVoltar.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnVoltar.ForeColor = Color.FromArgb(123, 97, 88);
-            btnVoltar.Location = new Point(80, 640);
+            btnVoltar.Location = new Point(80, 662);
             btnVoltar.Name = "btnVoltar";
             btnVoltar.Size = new Size(490, 42);
             btnVoltar.TabIndex = 12;
@@ -262,6 +308,11 @@ namespace SistemaEstoqueConfeitaria
         private Label lblNovaSenha;
         private TextBox txtNovaSenha;
         private PictureBox pbolhoNovaSenha;
+
+        private Label lblForcaSenha;
+        private Panel panelForcaFundo;
+        private Panel panelForca;
+        private Label lblRegrasSenha;
 
         private Label lblConfirmarSenha;
         private TextBox txtConfirmarSenha;

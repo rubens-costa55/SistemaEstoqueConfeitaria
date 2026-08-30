@@ -412,7 +412,7 @@
             cmbUnidade.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbUnidade.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbUnidade.FormattingEnabled = true;
-            cmbUnidade.Items.AddRange(new object[] { "kg", "", "g", "", "L", "", "ml", "", "un", "", "pacote", "", "caixa" });
+            cmbUnidade.Items.AddRange(new object[] { "kg", "g", "L", "ml", "un", "pacote", "caixa" });
             cmbUnidade.Location = new Point(320, 200);
             cmbUnidade.Name = "cmbUnidade";
             cmbUnidade.Size = new Size(160, 28);
@@ -435,7 +435,7 @@
             cmbCategoria.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategoria.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbCategoria.FormattingEnabled = true;
-            cmbCategoria.Items.AddRange(new object[] { "Farinhas", "", "Açúcares", "", "Laticínios", "", "Chocolates", "", "Frutas", "", "Confeitos", "", "Embalagens", "", "Outros" });
+            cmbCategoria.Items.AddRange(new object[] { "Farinhas", "Açúcares", "Laticínios", "Chocolates", "Frutas", "Confeitos", "Embalagens", "Outros" });
             cmbCategoria.Location = new Point(30, 200);
             cmbCategoria.Name = "cmbCategoria";
             cmbCategoria.Size = new Size(260, 28);
