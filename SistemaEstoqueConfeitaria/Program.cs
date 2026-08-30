@@ -2,15 +2,15 @@ namespace SistemaEstoqueConfeitaria
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+
+            // Cria a pasta, o banco e as tabelas automaticamente
+            BancoDados.InicializarBanco();
+
+            // Abre a tela de carregamento normalmente
             Application.Run(new frmCarregamento());
         }
     }

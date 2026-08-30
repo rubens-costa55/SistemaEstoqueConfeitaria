@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace SistemaEstoqueConfeitaria
 {
@@ -92,7 +92,10 @@ namespace SistemaEstoqueConfeitaria
             string confirmarSenha =
                 txtConfirmarSenha.Text;
 
+            // ========================================================
             // CPF
+            // ========================================================
+
             if (string.IsNullOrWhiteSpace(cpf))
             {
                 MessageBox.Show(
@@ -121,7 +124,10 @@ namespace SistemaEstoqueConfeitaria
                 return;
             }
 
+            // ========================================================
             // NOVA SENHA
+            // ========================================================
+
             if (string.IsNullOrWhiteSpace(novaSenha))
             {
                 MessageBox.Show(
@@ -150,7 +156,10 @@ namespace SistemaEstoqueConfeitaria
                 return;
             }
 
+            // ========================================================
             // CONFIRMAR SENHA
+            // ========================================================
+
             if (string.IsNullOrWhiteSpace(confirmarSenha))
             {
                 MessageBox.Show(
@@ -175,34 +184,35 @@ namespace SistemaEstoqueConfeitaria
                 );
 
                 txtConfirmarSenha.Clear();
+
                 txtConfirmarSenha.Focus();
 
                 return;
             }
 
             // ========================================================
-            // BANCO DE DADOS
+            // BANCO SQLITE
             // ========================================================
 
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                // Verificar se o CPF existe
+                // ====================================================
+                // VERIFICAR SE O CPF EXISTE
+                // ====================================================
+
                 string sqlVerificar =
                     @"SELECT id
                       FROM login
                       WHERE cpf = @cpf
                       LIMIT 1;";
 
-                using MySqlCommand cmdVerificar =
-                    new MySqlCommand(
+                using SqliteCommand cmdVerificar =
+                    new SqliteCommand(
                         sqlVerificar,
                         con
                     );
@@ -229,14 +239,17 @@ namespace SistemaEstoqueConfeitaria
                     return;
                 }
 
-                // Alterar a senha
+                // ====================================================
+                // ALTERAR SENHA
+                // ====================================================
+
                 string sqlAtualizar =
                     @"UPDATE login
                       SET senha = @senha
                       WHERE cpf = @cpf;";
 
-                using MySqlCommand cmdAtualizar =
-                    new MySqlCommand(
+                using SqliteCommand cmdAtualizar =
+                    new SqliteCommand(
                         sqlAtualizar,
                         con
                     );
@@ -275,7 +288,8 @@ namespace SistemaEstoqueConfeitaria
                     );
                 }
             }
-            catch (MySqlException ex)
+
+            catch (SqliteException ex)
             {
                 MessageBox.Show(
                     "Não foi possível acessar o banco de dados.\n\n" +
@@ -285,6 +299,7 @@ namespace SistemaEstoqueConfeitaria
                     MessageBoxIcon.Error
                 );
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(

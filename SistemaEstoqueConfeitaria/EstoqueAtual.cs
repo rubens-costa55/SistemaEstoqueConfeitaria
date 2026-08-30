@@ -2,7 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace SistemaEstoqueConfeitaria
 {
@@ -133,7 +133,6 @@ namespace SistemaEstoqueConfeitaria
                     FontStyle.Bold
                 );
 
-            // Impede cabeçalho azul
             dgvEstoque
                 .ColumnHeadersDefaultCellStyle
                 .SelectionBackColor =
@@ -182,49 +181,35 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // CARREGAR ESTOQUE
+        // CARREGAR ESTOQUE - SQLITE
         // ============================================================
 
         private void CarregarEstoque()
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
                 string sql =
                     @"SELECT
                         id,
-
-                        nome AS 'Insumo',
-
-                        categoria AS 'Categoria',
-
-                        unidade AS 'Unidade',
-
-                        quantidade_atual AS 'Estoque',
-
-                        estoque_minimo AS 'Mínimo',
-
+                        nome,
+                        categoria,
+                        unidade,
+                        quantidade_atual,
+                        estoque_minimo,
                         CASE
                             WHEN quantidade_atual <= 0
                                 THEN 'CRÍTICO'
-
                             WHEN quantidade_atual <= estoque_minimo
                                 THEN 'BAIXO'
-
                             ELSE 'OK'
-                        END AS 'Status'
-
+                        END AS status
                     FROM insumos
-
                     WHERE ativo = 1
-
                     AND nome LIKE @pesquisa";
 
                 // ================================================
@@ -236,14 +221,12 @@ namespace SistemaEstoqueConfeitaria
                     sql +=
                         @" AND quantidade_atual > estoque_minimo";
                 }
-
                 else if (cmbStatus.Text == "Baixo")
                 {
                     sql +=
                         @" AND quantidade_atual > 0
                            AND quantidade_atual <= estoque_minimo";
                 }
-
                 else if (cmbStatus.Text == "Crítico")
                 {
                     sql +=
@@ -253,8 +236,8 @@ namespace SistemaEstoqueConfeitaria
                 sql +=
                     @" ORDER BY nome;";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(
+                using SqliteCommand cmd =
+                    new SqliteCommand(
                         sql,
                         con
                     );
@@ -266,13 +249,87 @@ namespace SistemaEstoqueConfeitaria
                     "%"
                 );
 
-                using MySqlDataAdapter adapter =
-                    new MySqlDataAdapter(cmd);
+                using SqliteDataReader leitor =
+                    cmd.ExecuteReader();
 
+                // Criamos a tabela com os tipos definidos manualmente.
+                // Isso evita o erro de conversão do DataGridView.
                 DataTable tabela =
                     new DataTable();
 
-                adapter.Fill(tabela);
+                tabela.Columns.Add(
+                    "id",
+                    typeof(long)
+                );
+
+                tabela.Columns.Add(
+                    "Insumo",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Categoria",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Unidade",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Estoque",
+                    typeof(double)
+                );
+
+                tabela.Columns.Add(
+                    "Mínimo",
+                    typeof(double)
+                );
+
+                tabela.Columns.Add(
+                    "Status",
+                    typeof(string)
+                );
+
+                while (leitor.Read())
+                {
+                    DataRow linha =
+                        tabela.NewRow();
+
+                    linha["id"] =
+                        Convert.ToInt64(
+                            leitor["id"]
+                        );
+
+                    linha["Insumo"] =
+                        leitor["nome"]?.ToString()
+                        ?? "";
+
+                    linha["Categoria"] =
+                        leitor["categoria"]?.ToString()
+                        ?? "";
+
+                    linha["Unidade"] =
+                        leitor["unidade"]?.ToString()
+                        ?? "";
+
+                    linha["Estoque"] =
+                        Convert.ToDouble(
+                            leitor["quantidade_atual"]
+                        );
+
+                    linha["Mínimo"] =
+                        Convert.ToDouble(
+                            leitor["estoque_minimo"]
+                        );
+
+                    linha["Status"] =
+                        leitor["status"]?.ToString()
+                        ?? "";
+
+                    tabela.Rows.Add(linha);
+                }
 
                 dgvEstoque.DataSource =
                     tabela;
@@ -335,15 +392,7 @@ namespace SistemaEstoqueConfeitaria
                         90;
                 }
 
-                // ================================================
-                // CORES DOS STATUS
-                // ================================================
-
                 AplicarCoresStatus();
-
-                // ================================================
-                // NÃO SELECIONAR PRIMEIRA LINHA
-                // ================================================
 
                 dgvEstoque.ClearSelection();
 
@@ -411,7 +460,6 @@ namespace SistemaEstoqueConfeitaria
                             75
                         );
                 }
-
                 else if (status == "BAIXO")
                 {
                     celula.Style.BackColor =
@@ -428,7 +476,6 @@ namespace SistemaEstoqueConfeitaria
                             37
                         );
                 }
-
                 else if (status == "CRÍTICO")
                 {
                     celula.Style.BackColor =
@@ -449,62 +496,66 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // RESUMO
+        // RESUMO - SQLITE
         // ============================================================
 
         private void CarregarResumo()
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
                 string sql =
                     @"SELECT
-
                         COUNT(*) AS total,
 
-                        SUM(
-                            CASE
-                                WHEN quantidade_atual > estoque_minimo
-                                THEN 1
-                                ELSE 0
-                            END
+                        COALESCE(
+                            SUM(
+                                CASE
+                                    WHEN quantidade_atual > estoque_minimo
+                                    THEN 1
+                                    ELSE 0
+                                END
+                            ),
+                            0
                         ) AS total_ok,
 
-                        SUM(
-                            CASE
-                                WHEN quantidade_atual > 0
-                                AND quantidade_atual <= estoque_minimo
-                                THEN 1
-                                ELSE 0
-                            END
+                        COALESCE(
+                            SUM(
+                                CASE
+                                    WHEN quantidade_atual > 0
+                                    AND quantidade_atual <= estoque_minimo
+                                    THEN 1
+                                    ELSE 0
+                                END
+                            ),
+                            0
                         ) AS total_baixo,
 
-                        SUM(
-                            CASE
-                                WHEN quantidade_atual <= 0
-                                THEN 1
-                                ELSE 0
-                            END
+                        COALESCE(
+                            SUM(
+                                CASE
+                                    WHEN quantidade_atual <= 0
+                                    THEN 1
+                                    ELSE 0
+                                END
+                            ),
+                            0
                         ) AS total_critico
 
                     FROM insumos
-
                     WHERE ativo = 1;";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(
+                using SqliteCommand cmd =
+                    new SqliteCommand(
                         sql,
                         con
                     );
 
-                using MySqlDataReader leitor =
+                using SqliteDataReader leitor =
                     cmd.ExecuteReader();
 
                 if (leitor.Read())
@@ -545,7 +596,8 @@ namespace SistemaEstoqueConfeitaria
         private string ConverterNumero(
             object valor)
         {
-            if (valor == DBNull.Value)
+            if (valor == DBNull.Value ||
+                valor == null)
             {
                 return "0";
             }
@@ -646,12 +698,7 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             EventArgs e)
         {
-            EstoqueAtual tela =
-        new EstoqueAtual();
-
-            tela.Show();
-
-            this.Hide();
+            // Já estamos nesta tela.
         }
 
         // ============================================================
@@ -663,7 +710,7 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             ListaCompras tela =
-       new ListaCompras();
+                new ListaCompras();
 
             tela.Show();
 
@@ -679,7 +726,7 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             HistoricoMovimentacoes tela =
-        new HistoricoMovimentacoes();
+                new HistoricoMovimentacoes();
 
             tela.Show();
 

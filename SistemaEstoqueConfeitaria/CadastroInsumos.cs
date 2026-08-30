@@ -2,7 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace SistemaEstoqueConfeitaria
 {
@@ -17,17 +17,15 @@ namespace SistemaEstoqueConfeitaria
         public CadastroInsumos()
         {
             InitializeComponent();
-
             ConfigurarEventos();
         }
 
         // ============================================================
-        // CONFIGURAR EVENTOS
+        // EVENTOS
         // ============================================================
 
         private void ConfigurarEventos()
         {
-            // Evita eventos duplicados
             Load -= CadastroInsumos_Load;
             Load += CadastroInsumos_Load;
 
@@ -49,7 +47,6 @@ namespace SistemaEstoqueConfeitaria
             btnExcluir.Click -= btnExcluir_Click;
             btnExcluir.Click += btnExcluir_Click;
 
-            // Menu
             btnMenuPrincipal.Click -= btnMenuPrincipal_Click;
             btnMenuPrincipal.Click += btnMenuPrincipal_Click;
 
@@ -71,7 +68,6 @@ namespace SistemaEstoqueConfeitaria
             btnSair.Click -= btnSair_Click;
             btnSair.Click += btnSair_Click;
 
-            // Mover janela
             MouseDown -= Janela_MouseDown;
             MouseDown += Janela_MouseDown;
 
@@ -92,17 +88,16 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // CARREGAMENTO DA TELA
+        // LOAD
         // ============================================================
 
-        private void CadastroInsumos_Load(object? sender, EventArgs e)
+        private void CadastroInsumos_Load(
+            object? sender,
+            EventArgs e)
         {
             PrepararComboBoxes();
-
             ConfigurarDataGridView();
-
             CarregarInsumos();
-
             LimparCampos();
         }
 
@@ -114,36 +109,40 @@ namespace SistemaEstoqueConfeitaria
         {
             if (cmbCategoria.Items.Count == 0)
             {
-                cmbCategoria.Items.AddRange(new object[]
-                {
-                    "Farinhas",
-                    "Açúcares",
-                    "Laticínios",
-                    "Chocolates",
-                    "Frutas",
-                    "Confeitos",
-                    "Embalagens",
-                    "Outros"
-                });
+                cmbCategoria.Items.AddRange(
+                    new object[]
+                    {
+                        "Farinhas",
+                        "Açúcares",
+                        "Laticínios",
+                        "Chocolates",
+                        "Frutas",
+                        "Confeitos",
+                        "Embalagens",
+                        "Outros"
+                    }
+                );
             }
 
             if (cmbUnidade.Items.Count == 0)
             {
-                cmbUnidade.Items.AddRange(new object[]
-                {
-                    "kg",
-                    "g",
-                    "L",
-                    "ml",
-                    "un",
-                    "pacote",
-                    "caixa"
-                });
+                cmbUnidade.Items.AddRange(
+                    new object[]
+                    {
+                        "kg",
+                        "g",
+                        "L",
+                        "ml",
+                        "un",
+                        "pacote",
+                        "caixa"
+                    }
+                );
             }
         }
 
         // ============================================================
-        // DATAGRIDVIEW
+        // DATAGRID
         // ============================================================
 
         private void ConfigurarDataGridView()
@@ -164,7 +163,8 @@ namespace SistemaEstoqueConfeitaria
 
             dgvInsumos.RowHeadersVisible = false;
 
-            dgvInsumos.BackgroundColor = Color.White;
+            dgvInsumos.BackgroundColor =
+                Color.White;
 
             dgvInsumos.BorderStyle =
                 BorderStyle.FixedSingle;
@@ -172,36 +172,40 @@ namespace SistemaEstoqueConfeitaria
             dgvInsumos.GridColor =
                 Color.FromArgb(228, 206, 199);
 
-            // ========================================================
-            // CABEÇALHO
-            // ========================================================
+            // Cabeçalho
+            dgvInsumos.EnableHeadersVisualStyles =
+                false;
 
-            dgvInsumos.EnableHeadersVisualStyles = false;
-
-            dgvInsumos.ColumnHeadersDefaultCellStyle.BackColor =
+            dgvInsumos
+                .ColumnHeadersDefaultCellStyle
+                .BackColor =
                 Color.FromArgb(239, 229, 226);
 
-            dgvInsumos.ColumnHeadersDefaultCellStyle.ForeColor =
+            dgvInsumos
+                .ColumnHeadersDefaultCellStyle
+                .ForeColor =
                 Color.FromArgb(94, 74, 68);
 
-            dgvInsumos.ColumnHeadersDefaultCellStyle.Font =
+            dgvInsumos
+                .ColumnHeadersDefaultCellStyle
+                .Font =
                 new Font(
                     "Segoe UI",
                     9.5F,
                     FontStyle.Bold
                 );
 
-            // Impede o cabeçalho de ficar azul
-            dgvInsumos.ColumnHeadersDefaultCellStyle.SelectionBackColor =
+            dgvInsumos
+                .ColumnHeadersDefaultCellStyle
+                .SelectionBackColor =
                 Color.FromArgb(239, 229, 226);
 
-            dgvInsumos.ColumnHeadersDefaultCellStyle.SelectionForeColor =
+            dgvInsumos
+                .ColumnHeadersDefaultCellStyle
+                .SelectionForeColor =
                 Color.FromArgb(94, 74, 68);
 
-            // ========================================================
-            // LINHAS NORMAIS
-            // ========================================================
-
+            // Linhas
             dgvInsumos.DefaultCellStyle.BackColor =
                 Color.White;
 
@@ -215,18 +219,20 @@ namespace SistemaEstoqueConfeitaria
                     FontStyle.Regular
                 );
 
-            // ========================================================
-            // LINHA SELECIONADA
-            // ========================================================
-
-            dgvInsumos.DefaultCellStyle.SelectionBackColor =
+            // Seleção
+            dgvInsumos
+                .DefaultCellStyle
+                .SelectionBackColor =
                 Color.FromArgb(184, 112, 121);
 
-            dgvInsumos.DefaultCellStyle.SelectionForeColor =
+            dgvInsumos
+                .DefaultCellStyle
+                .SelectionForeColor =
                 Color.White;
 
-            // Linha alternada levemente diferente
-            dgvInsumos.AlternatingRowsDefaultCellStyle.BackColor =
+            dgvInsumos
+                .AlternatingRowsDefaultCellStyle
+                .BackColor =
                 Color.FromArgb(252, 250, 249);
         }
 
@@ -234,7 +240,9 @@ namespace SistemaEstoqueConfeitaria
         // SALVAR NOVO INSUMO
         // ============================================================
 
-        private void btnSalvar_Click(object? sender, EventArgs e)
+        private void btnSalvar_Click(
+            object? sender,
+            EventArgs e)
         {
             if (!ValidarCampos())
             {
@@ -243,15 +251,13 @@ namespace SistemaEstoqueConfeitaria
 
             try
             {
-                conexao banco = new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                string sql =
-                    @"INSERT INTO insumos
+                string sql = @"
+                    INSERT INTO insumos
                     (
                         nome,
                         categoria,
@@ -272,10 +278,11 @@ namespace SistemaEstoqueConfeitaria
                         @valor,
                         @fornecedor,
                         @observacao
-                    );";
+                    );
+                ";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(sql, con);
+                using SqliteCommand cmd =
+                    new SqliteCommand(sql, con);
 
                 cmd.Parameters.AddWithValue(
                     "@nome",
@@ -294,17 +301,23 @@ namespace SistemaEstoqueConfeitaria
 
                 cmd.Parameters.AddWithValue(
                     "@quantidade",
-                    nudQuantidade.Value
+                    Convert.ToDouble(
+                        nudQuantidade.Value
+                    )
                 );
 
                 cmd.Parameters.AddWithValue(
                     "@minimo",
-                    nudEstoqueMinimo.Value
+                    Convert.ToDouble(
+                        nudEstoqueMinimo.Value
+                    )
                 );
 
                 cmd.Parameters.AddWithValue(
                     "@valor",
-                    nudValorUnitario.Value
+                    Convert.ToDouble(
+                        nudValorUnitario.Value
+                    )
                 );
 
                 cmd.Parameters.AddWithValue(
@@ -327,10 +340,9 @@ namespace SistemaEstoqueConfeitaria
                 );
 
                 LimparCampos();
-
                 CarregarInsumos();
             }
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 MessageBox.Show(
                     "Não foi possível salvar o insumo.\n\n" +
@@ -358,7 +370,8 @@ namespace SistemaEstoqueConfeitaria
 
         private bool ValidarCampos()
         {
-            if (string.IsNullOrWhiteSpace(txtNome.Text))
+            if (string.IsNullOrWhiteSpace(
+                txtNome.Text))
             {
                 MessageBox.Show(
                     "Digite o nome do insumo.",
@@ -407,19 +420,18 @@ namespace SistemaEstoqueConfeitaria
         // CARREGAR INSUMOS
         // ============================================================
 
-        private void CarregarInsumos(string pesquisa = "")
+        private void CarregarInsumos(
+            string pesquisa = "")
         {
             try
             {
-                conexao banco = new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                string sql =
-                    @"SELECT
+                string sql = @"
+                    SELECT
                         id,
                         nome AS 'Insumo',
                         categoria AS 'Categoria',
@@ -430,40 +442,36 @@ namespace SistemaEstoqueConfeitaria
                     FROM insumos
                     WHERE ativo = 1
                     AND nome LIKE @pesquisa
-                    ORDER BY nome;";
+                    ORDER BY nome;
+                ";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(sql, con);
+                using SqliteCommand cmd =
+                    new SqliteCommand(sql, con);
 
                 cmd.Parameters.AddWithValue(
                     "@pesquisa",
                     "%" + pesquisa + "%"
                 );
 
-                using MySqlDataAdapter adapter =
-                    new MySqlDataAdapter(cmd);
+                using SqliteDataReader leitor =
+                    cmd.ExecuteReader();
 
                 DataTable tabela =
                     new DataTable();
 
-                adapter.Fill(tabela);
+                tabela.Load(leitor);
 
                 dgvInsumos.DataSource =
                     tabela;
 
                 if (dgvInsumos.Columns["id"] != null)
                 {
-                    dgvInsumos.Columns["id"].Visible =
-                        false;
+                    dgvInsumos
+                        .Columns["id"]
+                        .Visible = false;
                 }
 
-                // ====================================================
-                // IMPORTANTE:
-                // NÃO DEIXA A PRIMEIRA LINHA SELECIONADA SOZINHA
-                // ====================================================
-
                 dgvInsumos.ClearSelection();
-
                 dgvInsumos.CurrentCell = null;
 
                 idSelecionado = 0;
@@ -494,7 +502,7 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // CLICAR EM UMA LINHA
+        // SELEÇÃO DA LINHA
         // ============================================================
 
         private void dgvInsumos_CellClick(
@@ -547,42 +555,43 @@ namespace SistemaEstoqueConfeitaria
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                string sql =
-                    @"SELECT *
+                string sql = @"
+                    SELECT *
                     FROM insumos
                     WHERE id = @id
                     AND ativo = 1
-                    LIMIT 1;";
+                    LIMIT 1;
+                ";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(sql, con);
+                using SqliteCommand cmd =
+                    new SqliteCommand(sql, con);
 
                 cmd.Parameters.AddWithValue(
                     "@id",
                     idSelecionado
                 );
 
-                using MySqlDataReader leitor =
+                using SqliteDataReader leitor =
                     cmd.ExecuteReader();
 
                 if (leitor.Read())
                 {
                     txtNome.Text =
-                        leitor["nome"].ToString();
+                        leitor["nome"]?.ToString()
+                        ?? "";
 
                     cmbCategoria.Text =
-                        leitor["categoria"].ToString();
+                        leitor["categoria"]?.ToString()
+                        ?? "";
 
                     cmbUnidade.Text =
-                        leitor["unidade"].ToString();
+                        leitor["unidade"]?.ToString()
+                        ?? "";
 
                     nudQuantidade.Value =
                         Convert.ToDecimal(
@@ -600,10 +609,12 @@ namespace SistemaEstoqueConfeitaria
                         );
 
                     txtFornecedor.Text =
-                        leitor["fornecedor"].ToString();
+                        leitor["fornecedor"]?.ToString()
+                        ?? "";
 
                     txtObservacao.Text =
-                        leitor["observacao"].ToString();
+                        leitor["observacao"]?.ToString()
+                        ?? "";
 
                     btnSalvar.Text =
                         "Salvar Alterações";
@@ -652,16 +663,13 @@ namespace SistemaEstoqueConfeitaria
 
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                string sql =
-                    @"UPDATE insumos
+                string sql = @"
+                    UPDATE insumos
                     SET
                         nome = @nome,
                         categoria = @categoria,
@@ -671,11 +679,12 @@ namespace SistemaEstoqueConfeitaria
                         valor_unitario = @valor,
                         fornecedor = @fornecedor,
                         observacao = @observacao,
-                        data_atualizacao = NOW()
-                    WHERE id = @id;";
+                        data_atualizacao = CURRENT_TIMESTAMP
+                    WHERE id = @id;
+                ";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(sql, con);
+                using SqliteCommand cmd =
+                    new SqliteCommand(sql, con);
 
                 cmd.Parameters.AddWithValue(
                     "@nome",
@@ -694,17 +703,23 @@ namespace SistemaEstoqueConfeitaria
 
                 cmd.Parameters.AddWithValue(
                     "@quantidade",
-                    nudQuantidade.Value
+                    Convert.ToDouble(
+                        nudQuantidade.Value
+                    )
                 );
 
                 cmd.Parameters.AddWithValue(
                     "@minimo",
-                    nudEstoqueMinimo.Value
+                    Convert.ToDouble(
+                        nudEstoqueMinimo.Value
+                    )
                 );
 
                 cmd.Parameters.AddWithValue(
                     "@valor",
-                    nudValorUnitario.Value
+                    Convert.ToDouble(
+                        nudValorUnitario.Value
+                    )
                 );
 
                 cmd.Parameters.AddWithValue(
@@ -732,9 +747,7 @@ namespace SistemaEstoqueConfeitaria
                 );
 
                 VoltarModoCadastro();
-
                 LimparCampos();
-
                 CarregarInsumos();
             }
             catch (Exception ex)
@@ -777,30 +790,29 @@ namespace SistemaEstoqueConfeitaria
                     MessageBoxIcon.Question
                 );
 
-            if (resposta != DialogResult.Yes)
+            if (resposta !=
+                DialogResult.Yes)
             {
                 return;
             }
 
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                string sql =
-                    @"UPDATE insumos
+                string sql = @"
+                    UPDATE insumos
                     SET
                         ativo = 0,
-                        data_atualizacao = NOW()
-                    WHERE id = @id;";
+                        data_atualizacao = CURRENT_TIMESTAMP
+                    WHERE id = @id;
+                ";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(sql, con);
+                using SqliteCommand cmd =
+                    new SqliteCommand(sql, con);
 
                 cmd.Parameters.AddWithValue(
                     "@id",
@@ -817,7 +829,6 @@ namespace SistemaEstoqueConfeitaria
                 );
 
                 LimparCampos();
-
                 CarregarInsumos();
             }
             catch (Exception ex)
@@ -841,7 +852,6 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             LimparCampos();
-
             VoltarModoCadastro();
         }
 
@@ -883,7 +893,7 @@ namespace SistemaEstoqueConfeitaria
         }
 
         // ============================================================
-        // MENU PRINCIPAL
+        // MENU
         // ============================================================
 
         private void btnMenuPrincipal_Click(
@@ -895,34 +905,26 @@ namespace SistemaEstoqueConfeitaria
 
             menu.Show();
 
-            this.Hide();
+            Hide();
         }
-
-        // ============================================================
-        // CADASTRO DE INSUMOS
-        // ============================================================
 
         private void btnCadastroInsumos_Click(
             object? sender,
             EventArgs e)
         {
-            
+            // Já está nesta tela.
         }
-
-        // ============================================================
-        // PRÓXIMAS TELAS
-        // ============================================================
 
         private void btnMovimentarEstoque_Click(
             object? sender,
             EventArgs e)
         {
             MovimentarEstoque tela =
-       new MovimentarEstoque();
+                new MovimentarEstoque();
 
             tela.Show();
 
-            this.Hide();
+            Hide();
         }
 
         private void btnEstoqueAtual_Click(
@@ -930,11 +932,11 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             EstoqueAtual tela =
-    new EstoqueAtual();
+                new EstoqueAtual();
 
             tela.Show();
 
-            this.Hide();
+            Hide();
         }
 
         private void btnListaCompras_Click(
@@ -942,11 +944,11 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             ListaCompras tela =
-       new ListaCompras();
+                new ListaCompras();
 
             tela.Show();
 
-            this.Hide();
+            Hide();
         }
 
         private void btnHistorico_Click(
@@ -954,16 +956,12 @@ namespace SistemaEstoqueConfeitaria
             EventArgs e)
         {
             HistoricoMovimentacoes tela =
-        new HistoricoMovimentacoes();
+                new HistoricoMovimentacoes();
 
             tela.Show();
 
-            this.Hide();
+            Hide();
         }
-
-        // ============================================================
-        // SAIR
-        // ============================================================
 
         private void btnSair_Click(
             object? sender,
@@ -974,7 +972,7 @@ namespace SistemaEstoqueConfeitaria
 
             login.Show();
 
-            this.Hide();
+            Hide();
         }
 
         // ============================================================
@@ -985,7 +983,8 @@ namespace SistemaEstoqueConfeitaria
             object? sender,
             MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left)
+            if (e.Button !=
+                MouseButtons.Left)
             {
                 return;
             }
@@ -1016,10 +1015,14 @@ namespace SistemaEstoqueConfeitaria
                 Cursor.Position.Y -
                 posicaoMouseInicial.Y;
 
-            Location = new Point(
-                posicaoFormInicial.X + diferencaX,
-                posicaoFormInicial.Y + diferencaY
-            );
+            Location =
+                new Point(
+                    posicaoFormInicial.X +
+                    diferencaX,
+
+                    posicaoFormInicial.Y +
+                    diferencaY
+                );
         }
 
         private void Janela_MouseUp(

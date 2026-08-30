@@ -2,7 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace SistemaEstoqueConfeitaria
 {
@@ -153,11 +153,8 @@ namespace SistemaEstoqueConfeitaria
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
@@ -171,13 +168,16 @@ namespace SistemaEstoqueConfeitaria
                     WHERE ativo = 1
                     ORDER BY nome;";
 
-                using MySqlDataAdapter adapter =
-                    new MySqlDataAdapter(sql, con);
+                using SqliteCommand cmd =
+                    new SqliteCommand(sql, con);
+
+                using SqliteDataReader leitor =
+                    cmd.ExecuteReader();
 
                 DataTable tabela =
                     new DataTable();
 
-                adapter.Fill(tabela);
+                tabela.Load(leitor);
 
                 cmbInsumo.DataSource =
                     tabela;
@@ -361,25 +361,21 @@ namespace SistemaEstoqueConfeitaria
 
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
-                using MySqlTransaction transacao =
+                using SqliteTransaction transacao =
                     con.BeginTransaction();
 
                 string sqlEstoque =
                     @"SELECT quantidade_atual
                       FROM insumos
-                      WHERE id = @id
-                      FOR UPDATE;";
+                      WHERE id = @id;";
 
-                using MySqlCommand cmdEstoque =
-                    new MySqlCommand(
+                using SqliteCommand cmdEstoque =
+                    new SqliteCommand(
                         sqlEstoque,
                         con,
                         transacao
@@ -429,11 +425,11 @@ namespace SistemaEstoqueConfeitaria
                     @"UPDATE insumos
                       SET
                         quantidade_atual = @novo,
-                        data_atualizacao = NOW()
+                        data_atualizacao = CURRENT_TIMESTAMP
                       WHERE id = @id;";
 
-                using MySqlCommand cmdAtualizar =
-                    new MySqlCommand(
+                using SqliteCommand cmdAtualizar =
+                    new SqliteCommand(
                         sqlAtualizar,
                         con,
                         transacao
@@ -441,7 +437,7 @@ namespace SistemaEstoqueConfeitaria
 
                 cmdAtualizar.Parameters.AddWithValue(
                     "@novo",
-                    estoqueNovo
+                    Convert.ToDouble(estoqueNovo)
                 );
 
                 cmdAtualizar.Parameters.AddWithValue(
@@ -473,8 +469,8 @@ namespace SistemaEstoqueConfeitaria
                         @observacao
                     );";
 
-                using MySqlCommand cmdHistorico =
-                    new MySqlCommand(
+                using SqliteCommand cmdHistorico =
+                    new SqliteCommand(
                         sqlHistorico,
                         con,
                         transacao
@@ -492,17 +488,17 @@ namespace SistemaEstoqueConfeitaria
 
                 cmdHistorico.Parameters.AddWithValue(
                     "@quantidade",
-                    quantidade
+                    Convert.ToDouble(quantidade)
                 );
 
                 cmdHistorico.Parameters.AddWithValue(
                     "@anterior",
-                    estoqueAnterior
+                    Convert.ToDouble(estoqueAnterior)
                 );
 
                 cmdHistorico.Parameters.AddWithValue(
                     "@novo",
-                    estoqueNovo
+                    Convert.ToDouble(estoqueNovo)
                 );
 
                 cmdHistorico.Parameters.AddWithValue(
@@ -552,52 +548,140 @@ namespace SistemaEstoqueConfeitaria
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
                 string sql =
                     @"SELECT
-                        DATE_FORMAT(
-                            m.data_movimentacao,
-                            '%d/%m %H:%i'
-                        ) AS 'Data',
-
-                        i.nome AS 'Insumo',
-
-                        m.tipo AS 'Tipo',
-
-                        m.quantidade AS 'Qtd.',
-
-                        m.estoque_novo AS 'Estoque'
-
+                        m.data_movimentacao,
+                        i.nome,
+                        m.tipo,
+                        m.quantidade,
+                        m.estoque_novo
                     FROM movimentacoes_estoque m
-
                     INNER JOIN insumos i
                         ON i.id = m.insumo_id
-
-                    ORDER BY
-                        m.data_movimentacao DESC
-
+                    ORDER BY m.data_movimentacao DESC
                     LIMIT 20;";
 
-                using MySqlDataAdapter adapter =
-                    new MySqlDataAdapter(
+                using SqliteCommand cmd =
+                    new SqliteCommand(
                         sql,
                         con
                     );
 
+                using SqliteDataReader leitor =
+                    cmd.ExecuteReader();
+
+                // Criamos as colunas manualmente para evitar que o
+                // DataGridView interprete algum campo do SQLite como imagem.
                 DataTable tabela =
                     new DataTable();
 
-                adapter.Fill(tabela);
+                tabela.Columns.Add(
+                    "Data",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Insumo",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Tipo",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Qtd.",
+                    typeof(decimal)
+                );
+
+                tabela.Columns.Add(
+                    "Estoque",
+                    typeof(decimal)
+                );
+
+                while (leitor.Read())
+                {
+                    string dataExibicao =
+                        "";
+
+                    string dataBanco =
+                        leitor["data_movimentacao"]?.ToString()
+                        ?? "";
+
+                    if (DateTime.TryParse(
+                        dataBanco,
+                        out DateTime dataMovimentacao))
+                    {
+                        dataExibicao =
+                            dataMovimentacao.ToString(
+                                "dd/MM HH:mm"
+                            );
+                    }
+                    else
+                    {
+                        dataExibicao =
+                            dataBanco;
+                    }
+
+                    string insumo =
+                        leitor["nome"]?.ToString()
+                        ?? "";
+
+                    string tipo =
+                        leitor["tipo"]?.ToString()
+                        ?? "";
+
+                    decimal quantidade =
+                        Convert.ToDecimal(
+                            leitor["quantidade"]
+                        );
+
+                    decimal estoqueNovo =
+                        Convert.ToDecimal(
+                            leitor["estoque_novo"]
+                        );
+
+                    tabela.Rows.Add(
+                        dataExibicao,
+                        insumo,
+                        tipo,
+                        quantidade,
+                        estoqueNovo
+                    );
+                }
+
+                dgvMovimentacoes.DataSource =
+                    null;
+
+                dgvMovimentacoes.Columns.Clear();
+
+                dgvMovimentacoes.AutoGenerateColumns =
+                    true;
 
                 dgvMovimentacoes.DataSource =
                     tabela;
+
+                if (dgvMovimentacoes.Columns["Qtd."] != null)
+                {
+                    dgvMovimentacoes
+                        .Columns["Qtd."]
+                        .DefaultCellStyle.Format =
+                        "N2";
+                }
+
+                if (dgvMovimentacoes.Columns["Estoque"] != null)
+                {
+                    dgvMovimentacoes
+                        .Columns["Estoque"]
+                        .DefaultCellStyle.Format =
+                        "N2";
+                }
 
                 dgvMovimentacoes.ClearSelection();
 

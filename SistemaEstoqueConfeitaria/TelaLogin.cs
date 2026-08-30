@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace SistemaEstoqueConfeitaria
 {
@@ -114,9 +114,6 @@ namespace SistemaEstoqueConfeitaria
         {
             senhaVisivel = false;
 
-            // IMPORTANTE:
-            // deixamos PasswordChar zerado e usamos
-            // UseSystemPasswordChar para mostrar/esconder.
             txtSenha.PasswordChar = '\0';
 
             txtSenha.UseSystemPasswordChar = true;
@@ -142,12 +139,10 @@ namespace SistemaEstoqueConfeitaria
 
             if (senhaVisivel)
             {
-                // MOSTRAR SENHA
                 txtSenha.UseSystemPasswordChar = false;
             }
             else
             {
-                // ESCONDER SENHA
                 txtSenha.UseSystemPasswordChar = true;
             }
 
@@ -155,7 +150,6 @@ namespace SistemaEstoqueConfeitaria
 
             txtSenha.Focus();
 
-            // Coloca cursor no final da senha
             txtSenha.SelectionStart =
                 txtSenha.Text.Length;
         }
@@ -170,14 +164,12 @@ namespace SistemaEstoqueConfeitaria
             {
                 if (senhaVisivel)
                 {
-                    // SENHA VISÍVEL
                     pbolhosenha.Image =
                         Properties.Resources.ResourceManager
                         .GetObject("olho fechado") as Image;
                 }
                 else
                 {
-                    // SENHA ESCONDIDA
                     pbolhosenha.Image =
                         Properties.Resources.ResourceManager
                         .GetObject("olho aberto") as Image;
@@ -185,8 +177,8 @@ namespace SistemaEstoqueConfeitaria
             }
             catch
             {
-                // Se houver algum problema com a imagem,
-                // o mostrar/esconder senha continua funcionando.
+                // O mostrar/esconder continua funcionando
+                // mesmo se houver problema com a imagem.
             }
         }
 
@@ -255,16 +247,13 @@ namespace SistemaEstoqueConfeitaria
             }
 
             // ========================================================
-            // CONSULTAR BANCO
+            // CONSULTAR BANCO SQLITE
             // ========================================================
 
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
@@ -275,8 +264,8 @@ namespace SistemaEstoqueConfeitaria
                       AND senha = @senha
                       LIMIT 1;";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(
+                using SqliteCommand cmd =
+                    new SqliteCommand(
                         sql,
                         con
                     );
@@ -334,7 +323,7 @@ namespace SistemaEstoqueConfeitaria
                 }
             }
 
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 MessageBox.Show(
                     "Não foi possível acessar o banco de dados.\n\n" +

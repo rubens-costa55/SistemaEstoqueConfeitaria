@@ -46,8 +46,6 @@
             panelLinha = new Panel();
             pblogo = new PictureBox();
 
-            imageListMenu = new ImageList(components);
-
             lblTitulo = new Label();
             lblSubtitulo = new Label();
             lblAcessoRapido = new Label();
@@ -97,55 +95,6 @@
                 .BeginInit();
 
             SuspendLayout();
-
-            // ========================================================
-            // imageListMenu
-            // SOMENTE PARA REDIMENSIONAR OS ÍCONES
-            // ========================================================
-
-            imageListMenu.ColorDepth =
-                ColorDepth.Depth32Bit;
-
-            imageListMenu.ImageSize =
-                new Size(28, 28);
-
-            imageListMenu.TransparentColor =
-                Color.Transparent;
-
-            imageListMenu.Images.Add(
-                "menu",
-                Properties.Resources.icone_menu
-            );
-
-            imageListMenu.Images.Add(
-                "cadastro",
-                Properties.Resources.icone_cadastro
-            );
-
-            imageListMenu.Images.Add(
-                "movimentar",
-                Properties.Resources.icone_movimentar
-            );
-
-            imageListMenu.Images.Add(
-                "estoque",
-                Properties.Resources.icone_estoque
-            );
-
-            imageListMenu.Images.Add(
-                "compras",
-                Properties.Resources.icone_compras
-            );
-
-            imageListMenu.Images.Add(
-                "historico",
-                Properties.Resources.icone_historico
-            );
-
-            imageListMenu.Images.Add(
-                "sair",
-                Properties.Resources.icone_sair
-            );
 
             // ========================================================
             // panelMenu
@@ -225,25 +174,6 @@
             btnSair.UseVisualStyleBackColor =
                 false;
 
-            // ÍCONE
-            btnSair.ImageList =
-                imageListMenu;
-
-            btnSair.ImageKey =
-                "sair";
-
-            btnSair.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnSair.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnSair.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnSair.Padding =
-                new Padding(12, 0, 8, 0);
-
             // ========================================================
             // btnHistorico
             // ========================================================
@@ -289,25 +219,6 @@
 
             btnHistorico.UseVisualStyleBackColor =
                 false;
-
-            // ÍCONE
-            btnHistorico.ImageList =
-                imageListMenu;
-
-            btnHistorico.ImageKey =
-                "historico";
-
-            btnHistorico.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnHistorico.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnHistorico.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnHistorico.Padding =
-                new Padding(12, 0, 5, 0);
 
             // ========================================================
             // btnListaCompras
@@ -355,25 +266,6 @@
             btnListaCompras.UseVisualStyleBackColor =
                 false;
 
-            // ÍCONE
-            btnListaCompras.ImageList =
-                imageListMenu;
-
-            btnListaCompras.ImageKey =
-                "compras";
-
-            btnListaCompras.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnListaCompras.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnListaCompras.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnListaCompras.Padding =
-                new Padding(12, 0, 8, 0);
-
             // ========================================================
             // btnEstoqueAtual
             // ========================================================
@@ -419,25 +311,6 @@
 
             btnEstoqueAtual.UseVisualStyleBackColor =
                 false;
-
-            // ÍCONE
-            btnEstoqueAtual.ImageList =
-                imageListMenu;
-
-            btnEstoqueAtual.ImageKey =
-                "estoque";
-
-            btnEstoqueAtual.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnEstoqueAtual.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnEstoqueAtual.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnEstoqueAtual.Padding =
-                new Padding(12, 0, 8, 0);
 
             // ========================================================
             // btnMovimentarEstoque
@@ -485,25 +358,6 @@
             btnMovimentarEstoque.UseVisualStyleBackColor =
                 false;
 
-            // ÍCONE
-            btnMovimentarEstoque.ImageList =
-                imageListMenu;
-
-            btnMovimentarEstoque.ImageKey =
-                "movimentar";
-
-            btnMovimentarEstoque.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnMovimentarEstoque.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnMovimentarEstoque.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnMovimentarEstoque.Padding =
-                new Padding(12, 0, 8, 0);
-
             // ========================================================
             // btnCadastroInsumos
             // ========================================================
@@ -550,25 +404,6 @@
             btnCadastroInsumos.UseVisualStyleBackColor =
                 false;
 
-            // ÍCONE
-            btnCadastroInsumos.ImageList =
-                imageListMenu;
-
-            btnCadastroInsumos.ImageKey =
-                "cadastro";
-
-            btnCadastroInsumos.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnCadastroInsumos.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnCadastroInsumos.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnCadastroInsumos.Padding =
-                new Padding(12, 0, 8, 0);
-
             // ========================================================
             // btnMenuPrincipal
             // ========================================================
@@ -614,25 +449,6 @@
 
             btnMenuPrincipal.UseVisualStyleBackColor =
                 false;
-
-            // ÍCONE
-            btnMenuPrincipal.ImageList =
-                imageListMenu;
-
-            btnMenuPrincipal.ImageKey =
-                "menu";
-
-            btnMenuPrincipal.ImageAlign =
-                ContentAlignment.MiddleLeft;
-
-            btnMenuPrincipal.TextAlign =
-                ContentAlignment.MiddleCenter;
-
-            btnMenuPrincipal.TextImageRelation =
-                TextImageRelation.Overlay;
-
-            btnMenuPrincipal.Padding =
-                new Padding(12, 0, 8, 0);
 
             // ========================================================
             // panelLinha
@@ -1559,8 +1375,6 @@
         private Button btnHistorico;
         private Button btnListaCompras;
         private Button btnSair;
-
-        private ImageList imageListMenu;
 
         private Label lblTitulo;
         private Label lblSubtitulo;

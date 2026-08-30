@@ -2,7 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace SistemaEstoqueConfeitaria
 {
@@ -253,11 +253,8 @@ namespace SistemaEstoqueConfeitaria
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
@@ -265,28 +262,54 @@ namespace SistemaEstoqueConfeitaria
                     @"SELECT
                         id,
                         nome
-
                     FROM insumos
-
                     ORDER BY nome;";
 
-                using MySqlDataAdapter adapter =
-                    new MySqlDataAdapter(
+                using SqliteCommand cmd =
+                    new SqliteCommand(
                         sql,
                         con
                     );
 
+                using SqliteDataReader leitor =
+                    cmd.ExecuteReader();
+
                 DataTable tabela =
                     new DataTable();
 
-                adapter.Fill(tabela);
+                tabela.Columns.Add(
+                    "id",
+                    typeof(long)
+                );
+
+                tabela.Columns.Add(
+                    "nome",
+                    typeof(string)
+                );
+
+                while (leitor.Read())
+                {
+                    DataRow linha =
+                        tabela.NewRow();
+
+                    linha["id"] =
+                        Convert.ToInt64(
+                            leitor["id"]
+                        );
+
+                    linha["nome"] =
+                        leitor["nome"]?.ToString()
+                        ?? "";
+
+                    tabela.Rows.Add(linha);
+                }
 
                 // Adiciona "Todos" na primeira posição.
                 DataRow linhaTodos =
                     tabela.NewRow();
 
                 linhaTodos["id"] =
-                    0;
+                    0L;
 
                 linhaTodos["nome"] =
                     "Todos";
@@ -328,42 +351,26 @@ namespace SistemaEstoqueConfeitaria
         {
             try
             {
-                conexao banco =
-                    new conexao();
-
-                using MySqlConnection con =
-                    banco.Conectar();
+                using SqliteConnection con =
+                    BancoDados.Conectar();
 
                 con.Open();
 
                 string sql =
                     @"SELECT
-
                         m.id,
-
-                        DATE_FORMAT(
-                            m.data_movimentacao,
-                            '%d/%m/%Y %H:%i'
-                        ) AS 'Data',
-
-                        i.nome AS 'Insumo',
-
-                        m.tipo AS 'Tipo',
-
-                        m.quantidade AS 'Quantidade',
-
-                        i.unidade AS 'Un.',
-
-                        m.estoque_anterior AS 'Antes',
-
-                        m.estoque_novo AS 'Depois',
-
-                        m.motivo AS 'Motivo',
-
+                        m.data_movimentacao,
+                        i.nome AS insumo,
+                        m.tipo,
+                        m.quantidade,
+                        i.unidade,
+                        m.estoque_anterior,
+                        m.estoque_novo,
+                        m.motivo,
                         COALESCE(
                             m.observacao,
                             ''
-                        ) AS 'Observação'
+                        ) AS observacao
 
                     FROM movimentacoes_estoque m
 
@@ -453,10 +460,8 @@ namespace SistemaEstoqueConfeitaria
                         @" AND
                         (
                             i.nome LIKE @pesquisa
-
                             OR m.motivo LIKE @pesquisa
-
-                            OR m.observacao LIKE @pesquisa
+                            OR COALESCE(m.observacao, '') LIKE @pesquisa
                         )";
                 }
 
@@ -465,8 +470,8 @@ namespace SistemaEstoqueConfeitaria
                         m.data_movimentacao DESC,
                         m.id DESC;";
 
-                using MySqlCommand cmd =
-                    new MySqlCommand(
+                using SqliteCommand cmd =
+                    new SqliteCommand(
                         sql,
                         con
                     );
@@ -479,7 +484,10 @@ namespace SistemaEstoqueConfeitaria
                 {
                     cmd.Parameters.AddWithValue(
                         "@dataInicial",
-                        dtpDataInicial.Value.Date
+                        dtpDataInicial
+                        .Value
+                        .Date
+                        .ToString("yyyy-MM-dd HH:mm:ss")
                     );
                 }
 
@@ -492,6 +500,7 @@ namespace SistemaEstoqueConfeitaria
                         .Value
                         .Date
                         .AddDays(1)
+                        .ToString("yyyy-MM-dd HH:mm:ss")
                     );
                 }
 
@@ -536,13 +545,131 @@ namespace SistemaEstoqueConfeitaria
                     );
                 }
 
-                using MySqlDataAdapter adapter =
-                    new MySqlDataAdapter(cmd);
+                using SqliteDataReader leitor =
+                    cmd.ExecuteReader();
 
+                // Tipos definidos manualmente para evitar
+                // erros de conversão no DataGridView.
                 DataTable tabela =
                     new DataTable();
 
-                adapter.Fill(tabela);
+                tabela.Columns.Add(
+                    "id",
+                    typeof(long)
+                );
+
+                tabela.Columns.Add(
+                    "Data",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Insumo",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Tipo",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Quantidade",
+                    typeof(double)
+                );
+
+                tabela.Columns.Add(
+                    "Un.",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Antes",
+                    typeof(double)
+                );
+
+                tabela.Columns.Add(
+                    "Depois",
+                    typeof(double)
+                );
+
+                tabela.Columns.Add(
+                    "Motivo",
+                    typeof(string)
+                );
+
+                tabela.Columns.Add(
+                    "Observação",
+                    typeof(string)
+                );
+
+                while (leitor.Read())
+                {
+                    DataRow linha =
+                        tabela.NewRow();
+
+                    linha["id"] =
+                        Convert.ToInt64(
+                            leitor["id"]
+                        );
+
+                    string dataBanco =
+                        leitor["data_movimentacao"]?
+                        .ToString()
+                        ?? "";
+
+                    if (DateTime.TryParse(
+                        dataBanco,
+                        out DateTime dataMovimentacao
+                    ))
+                    {
+                        linha["Data"] =
+                            dataMovimentacao
+                            .ToString("dd/MM/yyyy HH:mm");
+                    }
+                    else
+                    {
+                        linha["Data"] =
+                            dataBanco;
+                    }
+
+                    linha["Insumo"] =
+                        leitor["insumo"]?.ToString()
+                        ?? "";
+
+                    linha["Tipo"] =
+                        leitor["tipo"]?.ToString()
+                        ?? "";
+
+                    linha["Quantidade"] =
+                        Convert.ToDouble(
+                            leitor["quantidade"]
+                        );
+
+                    linha["Un."] =
+                        leitor["unidade"]?.ToString()
+                        ?? "";
+
+                    linha["Antes"] =
+                        Convert.ToDouble(
+                            leitor["estoque_anterior"]
+                        );
+
+                    linha["Depois"] =
+                        Convert.ToDouble(
+                            leitor["estoque_novo"]
+                        );
+
+                    linha["Motivo"] =
+                        leitor["motivo"]?.ToString()
+                        ?? "";
+
+                    linha["Observação"] =
+                        leitor["observacao"]?.ToString()
+                        ?? "";
+
+                    tabela.Rows.Add(linha);
+                }
 
                 dgvHistorico.DataSource =
                     tabela;
@@ -633,7 +760,6 @@ namespace SistemaEstoqueConfeitaria
                     tabela
                 );
 
-                // NÃO SELECIONA A PRIMEIRA LINHA
                 dgvHistorico.ClearSelection();
 
                 dgvHistorico.CurrentCell =
